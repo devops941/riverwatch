@@ -1,0 +1,530 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>RiverWatch - River Health & Pollution Intelligence Report</title>
+  <style>
+    body { font-family: 'Helvetica Neue', Arial, sans-serif; line-height: 1.6; color: #1e293b; margin: 30px; background: #ffffff; }
+    .header { border-bottom: 3px solid #0284c7; padding-bottom: 15px; margin-bottom: 25px; }
+    .title { font-size: 26px; font-weight: 800; color: #0f172a; margin: 0; }
+    .subtitle { font-size: 14px; color: #64748b; margin-top: 5px; }
+    .badge { display: inline-block; padding: 4px 10px; border-radius: 9999px; font-size: 12px; font-weight: 700; }
+    .badge-excellent { background: #dcfce7; color: #166534; }
+    .badge-good { background: #e0f2fe; color: #0369a1; }
+    .badge-poor { background: #fef3c7; color: #92400e; }
+    .badge-very-poor { background: #ffedd5; color: #9a3412; }
+    .badge-unsuitable { background: #fee2e2; color: #991b1b; }
+    .kpi-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 15px; margin-bottom: 30px; }
+    .kpi-card { background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 8px; padding: 15px; text-align: center; }
+    .kpi-val { font-size: 24px; font-weight: 800; color: #0284c7; }
+    .kpi-label { font-size: 12px; text-transform: uppercase; color: #64748b; margin-top: 5px; font-weight: 600; }
+    table { width: 100%; border-collapse: collapse; margin-top: 15px; margin-bottom: 30px; font-size: 13px; }
+    th { background: #f1f5f9; color: #334155; font-weight: 700; text-align: left; padding: 10px; border-bottom: 2px solid #cbd5e1; }
+    td { padding: 10px; border-bottom: 1px solid #e2e8f0; }
+    tr:nth-child(even) { background: #f8fafc; }
+    .section-title { font-size: 18px; font-weight: 700; color: #0f172a; margin-top: 30px; margin-bottom: 10px; border-left: 4px solid #0284c7; padding-left: 10px; }
+    .chart-container { text-align: center; margin: 25px 0; }
+    .chart-img { max-width: 100%; height: auto; border: 1px solid #e2e8f0; border-radius: 6px; }
+    .footer { margin-top: 50px; border-top: 1px solid #e2e8f0; padding-top: 15px; font-size: 11px; color: #94a3b8; text-align: center; }
+  </style>
+</head>
+<body>
+  <div class="header">
+    <h1 class="title">🌊 RiverWatch: River Health & Pollution Assessment</h1>
+    <div class="subtitle">Generated on 2026-11-17 08:29 UTC | River: <strong>Ganga Basin</strong> | Monitored Stations: 8</div>
+  </div>
+
+  <div class="kpi-grid">
+    <div class="kpi-card">
+      <div class="kpi-val">769</div>
+      <div class="kpi-label">Total Samples</div>
+    </div>
+    <div class="kpi-card">
+      <div class="kpi-val">181.25</div>
+      <div class="kpi-label">Mean WQI</div>
+    </div>
+    <div class="kpi-card">
+      <div class="kpi-val">9.8%</div>
+      <div class="kpi-label">Meeting Class B</div>
+    </div>
+    <div class="kpi-card">
+      <div class="kpi-val">bod_mgl</div>
+      <div class="kpi-label">Primary Driver</div>
+    </div>
+  </div>
+
+  <h2 class="section-title">1. Station Health & Sampling Priority Summary</h2>
+  <table>
+    <thead>
+      <tr>
+        <th>Rank</th>
+        <th>Station ID</th>
+        <th>Station Name</th>
+        <th>Order</th>
+        <th>Latest WQI</th>
+        <th>WQI Class</th>
+        <th>Priority Score</th>
+        <th>Recommended Action / Reason</th>
+      </tr>
+    </thead>
+    <tbody>
+      
+      <tr>
+        <td><strong>#1</strong></td>
+        <td>STN-08</td>
+        <td>Varanasi Malviya Bridge</td>
+        <td>8</td>
+        <td>264.61</td>
+        <td>
+          <span class="badge badge-unsuitable">
+            Unsuitable
+          </span>
+        </td>
+        <td><strong>0.8918</strong></td>
+        <td>Elevated WQI (335.2); Worsening quality trend (+3.98/yr); 100% CPCB violation rate; No sampling for 671 days</td>
+      </tr>
+      
+      <tr>
+        <td><strong>#2</strong></td>
+        <td>STN-07</td>
+        <td>Varanasi Assi Ghat</td>
+        <td>7</td>
+        <td>212.59</td>
+        <td>
+          <span class="badge badge-unsuitable">
+            Unsuitable
+          </span>
+        </td>
+        <td><strong>0.8291</strong></td>
+        <td>Elevated WQI (275.1); Worsening quality trend (+4.11/yr); 100% CPCB violation rate; No sampling for 671 days</td>
+      </tr>
+      
+      <tr>
+        <td><strong>#3</strong></td>
+        <td>STN-06</td>
+        <td>Prayagraj Sangam</td>
+        <td>6</td>
+        <td>181.61</td>
+        <td>
+          <span class="badge badge-unsuitable">
+            Unsuitable
+          </span>
+        </td>
+        <td><strong>0.6894</strong></td>
+        <td>Elevated WQI (228.4); Worsening quality trend (+2.65/yr); 100% CPCB violation rate; No sampling for 671 days</td>
+      </tr>
+      
+      <tr>
+        <td><strong>#4</strong></td>
+        <td>STN-05</td>
+        <td>Kanpur Jajmau</td>
+        <td>5</td>
+        <td>146.87</td>
+        <td>
+          <span class="badge badge-unsuitable">
+            Unsuitable
+          </span>
+        </td>
+        <td><strong>0.6575</strong></td>
+        <td>Elevated WQI (188.8); Worsening quality trend (+2.79/yr); 100% CPCB violation rate; No sampling for 671 days</td>
+      </tr>
+      
+      <tr>
+        <td><strong>#5</strong></td>
+        <td>STN-04</td>
+        <td>Kannauj Confluence</td>
+        <td>4</td>
+        <td>134.37</td>
+        <td>
+          <span class="badge badge-unsuitable">
+            Unsuitable
+          </span>
+        </td>
+        <td><strong>0.6356</strong></td>
+        <td>Elevated WQI (161.5); Worsening quality trend (+2.74/yr); 100% CPCB violation rate; No sampling for 671 days</td>
+      </tr>
+      
+      <tr>
+        <td><strong>#6</strong></td>
+        <td>STN-03</td>
+        <td>Garhmukteshwar Ghat</td>
+        <td>3</td>
+        <td>89.49</td>
+        <td>
+          <span class="badge badge-very-poor">
+            Very Poor
+          </span>
+        </td>
+        <td><strong>0.5263</strong></td>
+        <td>Elevated WQI (135.8); Worsening quality trend (+1.31/yr); 100% CPCB violation rate; No sampling for 671 days</td>
+      </tr>
+      
+      <tr>
+        <td><strong>#7</strong></td>
+        <td>STN-02</td>
+        <td>Haridwar D/S Barrage</td>
+        <td>2</td>
+        <td>68.36</td>
+        <td>
+          <span class="badge badge-poor">
+            Poor
+          </span>
+        </td>
+        <td><strong>0.462</strong></td>
+        <td>Elevated WQI (110.3); Worsening quality trend (+1.36/yr); 82% CPCB violation rate; No sampling for 671 days</td>
+      </tr>
+      
+      <tr>
+        <td><strong>#8</strong></td>
+        <td>STN-01</td>
+        <td>Rishikesh Upstream</td>
+        <td>1</td>
+        <td>62.63</td>
+        <td>
+          <span class="badge badge-poor">
+            Poor
+          </span>
+        </td>
+        <td><strong>0.1</strong></td>
+        <td>Elevated WQI (93.2); 40% CPCB violation rate</td>
+      </tr>
+      
+    </tbody>
+  </table>
+
+  <h2 class="section-title">2. Primary Pollution Drivers Ranking</h2>
+  <table>
+    <thead>
+      <tr>
+        <th>Rank</th>
+        <th>Parameter Code</th>
+        <th>Driver Score</th>
+        <th>PCA Contribution</th>
+        <th>WQI Correlation</th>
+        <th>Period Change</th>
+        <th>Domain Explanation</th>
+      </tr>
+    </thead>
+    <tbody>
+      
+      <tr>
+        <td><strong>#1</strong></td>
+        <td><code>bod_mgl</code></td>
+        <td><strong>0.711</strong></td>
+        <td>0.861</td>
+        <td>0.314</td>
+        <td>1.0</td>
+        <td>Primary Driver (#1): Organic sewage and untreated effluent; depletes oxygen critical for aquatic biodiversity. (Impact score: 0.71).</td>
+      </tr>
+      
+      <tr>
+        <td><strong>#2</strong></td>
+        <td><code>cod_mgl</code></td>
+        <td><strong>0.673</strong></td>
+        <td>0.806</td>
+        <td>0.287</td>
+        <td>0.967</td>
+        <td>Major Co-Factor (#2): Chemical oxidizable pollutants indicating non-biodegradable industrial waste. (Impact score: 0.67).</td>
+      </tr>
+      
+      <tr>
+        <td><strong>#3</strong></td>
+        <td><code>nitrate_mgl</code></td>
+        <td><strong>0.665</strong></td>
+        <td>0.89</td>
+        <td>1.0</td>
+        <td>0.011</td>
+        <td>Major Co-Factor (#3): Nutrient pollution causing eutrophication from fertilizers and municipal runoff. (Impact score: 0.66).</td>
+      </tr>
+      
+      <tr>
+        <td><strong>#4</strong></td>
+        <td><code>ammonia_mgl</code></td>
+        <td><strong>0.639</strong></td>
+        <td>0.874</td>
+        <td>0.281</td>
+        <td>0.783</td>
+        <td>Secondary Factor (#4): Toxic byproduct of domestic wastewater decomposition and agricultural discharges..</td>
+      </tr>
+      
+      <tr>
+        <td><strong>#5</strong></td>
+        <td><code>do_mgl</code></td>
+        <td><strong>0.54</strong></td>
+        <td>0.745</td>
+        <td>0.444</td>
+        <td>0.413</td>
+        <td>Secondary Factor (#5): Oxygen saturation vital for river ecosystem; severe deficit indicates excessive organic loading..</td>
+      </tr>
+      
+      <tr>
+        <td><strong>#6</strong></td>
+        <td><code>faecal_coliform_mpn</code></td>
+        <td><strong>0.511</strong></td>
+        <td>0.816</td>
+        <td>0.587</td>
+        <td>0.065</td>
+        <td>Secondary Factor (#6): Direct indicator of human/animal fecal contamination and waterborne pathogen risk..</td>
+      </tr>
+      
+      <tr>
+        <td><strong>#7</strong></td>
+        <td><code>total_coliform_mpn</code></td>
+        <td><strong>0.494</strong></td>
+        <td>0.814</td>
+        <td>0.59</td>
+        <td>0.011</td>
+        <td>Secondary Factor (#7): General bacterial contamination from surface runoff and domestic sewage..</td>
+      </tr>
+      
+      <tr>
+        <td><strong>#8</strong></td>
+        <td><code>ph</code></td>
+        <td><strong>0.423</strong></td>
+        <td>0.612</td>
+        <td>0.449</td>
+        <td>0.174</td>
+        <td>Secondary Factor (#8): Acid-base imbalance indicating chemical effluent or extreme algal blooms..</td>
+      </tr>
+      
+      <tr>
+        <td><strong>#9</strong></td>
+        <td><code>tds_mgl</code></td>
+        <td><strong>0.351</strong></td>
+        <td>0.994</td>
+        <td>0.0</td>
+        <td>0.011</td>
+        <td>Secondary Factor (#9): Total dissolved solids affecting salinity and industrial water usability..</td>
+      </tr>
+      
+      <tr>
+        <td><strong>#10</strong></td>
+        <td><code>conductivity_uscm</code></td>
+        <td><strong>0.351</strong></td>
+        <td>1.0</td>
+        <td>0.001</td>
+        <td>0.0</td>
+        <td>Secondary Factor (#10): Dissolved ionic mineral content and industrial effluent discharge..</td>
+      </tr>
+      
+      <tr>
+        <td><strong>#11</strong></td>
+        <td><code>turbidity_ntu</code></td>
+        <td><strong>0.347</strong></td>
+        <td>0.081</td>
+        <td>0.856</td>
+        <td>0.065</td>
+        <td>Secondary Factor (#11): Suspended sediment from soil erosion and industrial/construction runoff..</td>
+      </tr>
+      
+      <tr>
+        <td><strong>#12</strong></td>
+        <td><code>temp_c</code></td>
+        <td><strong>0.071</strong></td>
+        <td>0.0</td>
+        <td>0.111</td>
+        <td>0.109</td>
+        <td>Secondary Factor (#12): Thermal pollution altering biochemical reaction rates and dissolved gas solubility..</td>
+      </tr>
+      
+    </tbody>
+  </table>
+
+  <h2 class="section-title">3. Long-Term Trend Insights (Mann-Kendall & Sen's Slope)</h2>
+  <table>
+    <thead>
+      <tr>
+        <th>Station ID</th>
+        <th>Parameter</th>
+        <th>Test</th>
+        <th>Trend</th>
+        <th>Interpretation</th>
+        <th>Sen's Slope / Year</th>
+        <th>p-Value</th>
+      </tr>
+    </thead>
+    <tbody>
+      
+      <tr>
+        <td>STN-05</td>
+        <td><code>cod_mgl</code></td>
+        <td>hamed_rao</td>
+        <td>increasing</td>
+        <td>
+          <span style="color: #ef4444; font-weight: bold;">
+            worsening
+          </span>
+        </td>
+        <td>0.3445</td>
+        <td>0.0</td>
+      </tr>
+      
+      <tr>
+        <td>STN-06</td>
+        <td><code>ammonia_mgl</code></td>
+        <td>hamed_rao</td>
+        <td>increasing</td>
+        <td>
+          <span style="color: #ef4444; font-weight: bold;">
+            worsening
+          </span>
+        </td>
+        <td>0.0559</td>
+        <td>0.0</td>
+      </tr>
+      
+      <tr>
+        <td>STN-07</td>
+        <td><code>ammonia_mgl</code></td>
+        <td>hamed_rao</td>
+        <td>increasing</td>
+        <td>
+          <span style="color: #ef4444; font-weight: bold;">
+            worsening
+          </span>
+        </td>
+        <td>0.0526</td>
+        <td>0.0</td>
+      </tr>
+      
+      <tr>
+        <td>STN-08</td>
+        <td><code>cod_mgl</code></td>
+        <td>hamed_rao</td>
+        <td>increasing</td>
+        <td>
+          <span style="color: #ef4444; font-weight: bold;">
+            worsening
+          </span>
+        </td>
+        <td>0.9029</td>
+        <td>0.0</td>
+      </tr>
+      
+      <tr>
+        <td>STN-04</td>
+        <td><code>cod_mgl</code></td>
+        <td>hamed_rao</td>
+        <td>increasing</td>
+        <td>
+          <span style="color: #ef4444; font-weight: bold;">
+            worsening
+          </span>
+        </td>
+        <td>0.4764</td>
+        <td>0.0001</td>
+      </tr>
+      
+      <tr>
+        <td>STN-06</td>
+        <td><code>wqi</code></td>
+        <td>hamed_rao</td>
+        <td>increasing</td>
+        <td>
+          <span style="color: #ef4444; font-weight: bold;">
+            worsening
+          </span>
+        </td>
+        <td>2.6499</td>
+        <td>0.0001</td>
+      </tr>
+      
+      <tr>
+        <td>STN-05</td>
+        <td><code>wqi</code></td>
+        <td>hamed_rao</td>
+        <td>increasing</td>
+        <td>
+          <span style="color: #ef4444; font-weight: bold;">
+            worsening
+          </span>
+        </td>
+        <td>2.7918</td>
+        <td>0.0003</td>
+      </tr>
+      
+      <tr>
+        <td>STN-08</td>
+        <td><code>bod_mgl</code></td>
+        <td>hamed_rao</td>
+        <td>increasing</td>
+        <td>
+          <span style="color: #ef4444; font-weight: bold;">
+            worsening
+          </span>
+        </td>
+        <td>0.2812</td>
+        <td>0.0003</td>
+      </tr>
+      
+      <tr>
+        <td>STN-08</td>
+        <td><code>ammonia_mgl</code></td>
+        <td>hamed_rao</td>
+        <td>increasing</td>
+        <td>
+          <span style="color: #ef4444; font-weight: bold;">
+            worsening
+          </span>
+        </td>
+        <td>0.056</td>
+        <td>0.0011</td>
+      </tr>
+      
+      <tr>
+        <td>STN-05</td>
+        <td><code>ammonia_mgl</code></td>
+        <td>hamed_rao</td>
+        <td>increasing</td>
+        <td>
+          <span style="color: #ef4444; font-weight: bold;">
+            worsening
+          </span>
+        </td>
+        <td>0.0283</td>
+        <td>0.0015</td>
+      </tr>
+      
+      <tr>
+        <td>STN-08</td>
+        <td><code>faecal_coliform_mpn</code></td>
+        <td>hamed_rao</td>
+        <td>decreasing</td>
+        <td>
+          <span style="color: #10b981; font-weight: bold;">
+            improving
+          </span>
+        </td>
+        <td>-1938.1267</td>
+        <td>0.0022</td>
+      </tr>
+      
+      <tr>
+        <td>STN-03</td>
+        <td><code>bod_mgl</code></td>
+        <td>hamed_rao</td>
+        <td>increasing</td>
+        <td>
+          <span style="color: #ef4444; font-weight: bold;">
+            worsening
+          </span>
+        </td>
+        <td>0.111</td>
+        <td>0.0024</td>
+      </tr>
+      
+    </tbody>
+  </table>
+
+  
+  <div class="chart-container">
+    <h3 style="color: #475569;">Longitudinal River Degradation Profile</h3>
+    <img src="test_report_chart.png" class="chart-img" alt="Longitudinal Profile">
+  </div>
+  
+
+  <div class="footer">
+    RiverWatch Intelligent Water Quality Analysis System &bull; CPCB & BIS Standards Compliant &bull; Automated Environmental Audit
+  </div>
+</body>
+</html>

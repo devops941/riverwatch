@@ -1,0 +1,135 @@
+# RiverWatch Parameter Configurations & Standards
+# Based on CPCB (Central Pollution Control Board) & BIS 10500 standards
+
+parameters:
+  ph:
+    display_name: "pH"
+    unit: "pH units"
+    standard_value: 8.5
+    ideal_value: 7.0
+    worse_if: "both"
+    valid_min: 0.0
+    valid_max: 14.0
+    expected_range_min: 5.5
+    expected_range_max: 9.5
+
+  do_mgl:
+    display_name: "Dissolved Oxygen"
+    unit: "mg/L"
+    standard_value: 5.0
+    ideal_value: 14.6
+    worse_if: "decreasing"
+    valid_min: 0.0
+    valid_max: 20.0
+    expected_range_min: 0.0
+    expected_range_max: 15.0
+
+  bod_mgl:
+    display_name: "Biochemical Oxygen Demand (BOD)"
+    unit: "mg/L"
+    standard_value: 3.0
+    ideal_value: 0.0
+    worse_if: "increasing"
+    valid_min: 0.0
+    valid_max: 200.0
+    expected_range_min: 0.0
+    expected_range_max: 60.0
+
+  cod_mgl:
+    display_name: "Chemical Oxygen Demand (COD)"
+    unit: "mg/L"
+    standard_value: 10.0
+    ideal_value: 0.0
+    worse_if: "increasing"
+    valid_min: 0.0
+    valid_max: 500.0
+    expected_range_min: 0.0
+    expected_range_max: 250.0
+
+  nitrate_mgl:
+    display_name: "Nitrate (as NO3)"
+    unit: "mg/L"
+    standard_value: 20.0
+    ideal_value: 0.0
+    worse_if: "increasing"
+    valid_min: 0.0
+    valid_max: 100.0
+    expected_range_min: 0.0
+    expected_range_max: 50.0
+
+  ammonia_mgl:
+    display_name: "Free Ammonia"
+    unit: "mg/L"
+    standard_value: 1.2
+    ideal_value: 0.0
+    worse_if: "increasing"
+    valid_min: 0.0
+    valid_max: 50.0
+    expected_range_min: 0.0
+    expected_range_max: 20.0
+
+  conductivity_uscm:
+    display_name: "Electrical Conductivity"
+    unit: "µS/cm"
+    standard_value: 1000.0
+    ideal_value: 0.0
+    worse_if: "increasing"
+    valid_min: 0.0
+    valid_max: 50000.0
+    expected_range_min: 50.0
+    expected_range_max: 8000.0
+
+  turbidity_ntu:
+    display_name: "Turbidity"
+    unit: "NTU"
+    standard_value: 5.0
+    ideal_value: 0.0
+    worse_if: "increasing"
+    valid_min: 0.0
+    valid_max: 1000.0
+    expected_range_min: 0.1
+    expected_range_max: 300.0
+
+  tds_mgl:
+    display_name: "Total Dissolved Solids"
+    unit: "mg/L"
+    standard_value: 500.0
+    ideal_value: 0.0
+    worse_if: "increasing"
+    valid_min: 0.0
+    valid_max: 10000.0
+    expected_range_min: 10.0
+    expected_range_max: 3000.0
+
+  temp_c:
+    display_name: "Water Temperature"
+    unit: "°C"
+    standard_value: 30.0
+    ideal_value: 20.0
+    worse_if: "both"
+    valid_min: 0.0
+    valid_max: 50.0
+    expected_range_min: 5.0
+    expected_range_max: 42.0
+
+  total_coliform_mpn:
+    display_name: "Total Coliform"
+    unit: "MPN/100mL"
+    standard_value: 500.0
+    ideal_value: 0.0
+    worse_if: "increasing"
+    valid_min: 0.0
+    valid_max: 10000000.0
+    expected_range_min: 0.0
+    expected_range_max: 5000000.0
+
+  faecal_coliform_mpn:
+    display_name: "Faecal Coliform"
+    unit: "MPN/100mL"
+    standard_value: 500.0
+    ideal_value: 0.0
+    worse_if: "increasing"
+    valid_min: 0.0
+    valid_max: 10000000.0
+    expected_range_min: 0.0
+    expected_range_max: 5000000.0

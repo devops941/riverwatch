@@ -1,0 +1,153 @@
+# Column Aliases mapping real-world / CPCB / lab headers to standard parameter names
+
+aliases:
+  station_id:
+    - "station_id"
+    - "station id"
+    - "stn_id"
+    - "stn code"
+    - "station code"
+    - "monitoring station"
+    - "station_code"
+    - "site_id"
+
+  station_name:
+    - "station_name"
+    - "station name"
+    - "location"
+    - "stn_name"
+    - "monitoring location"
+    - "station"
+    - "site_name"
+
+  river:
+    - "river"
+    - "river_name"
+    - "water body"
+    - "waterbody"
+    - "river name"
+    - "basin"
+
+  lat:
+    - "lat"
+    - "latitude"
+    - "lat_deg"
+    - "y"
+
+  lon:
+    - "lon"
+    - "longitude"
+    - "long"
+    - "lon_deg"
+    - "lng"
+    - "x"
+
+  sample_date:
+    - "sample_date"
+    - "date"
+    - "sampling date"
+    - "date of collection"
+    - "sample date"
+    - "monitored_date"
+    - "datetime"
+
+  ph:
+    - "ph"
+    - "p_h"
+    - "ph_value"
+    - "ph (units)"
+    - "ph value"
+
+  do_mgl:
+    - "do_mgl"
+    - "do"
+    - "dissolved oxygen"
+    - "dissolved_oxygen"
+    - "do (mg/l)"
+    - "do_mg/l"
+    - "d.o."
+    - "dissolved oxygen (mg/l)"
+
+  bod_mgl:
+    - "bod_mgl"
+    - "bod"
+    - "biochemical oxygen demand"
+    - "bod (mg/l)"
+    - "bod_mg/l"
+    - "bod 3 days 27c"
+    - "bod_3_days_27c"
+
+  cod_mgl:
+    - "cod_mgl"
+    - "cod"
+    - "chemical oxygen demand"
+    - "cod (mg/l)"
+    - "cod_mg/l"
+
+  nitrate_mgl:
+    - "nitrate_mgl"
+    - "nitrate"
+    - "nitrate-n"
+    - "nitrate (mg/l)"
+    - "no3"
+    - "no3_mgl"
+    - "nitrate_mg/l"
+
+  ammonia_mgl:
+    - "ammonia_mgl"
+    - "ammonia"
+    - "ammonical nitrogen"
+    - "ammonia-n"
+    - "ammonia (mg/l)"
+    - "nh3"
+    - "nh3_mgl"
+
+  conductivity_uscm:
+    - "conductivity_uscm"
+    - "conductivity"
+    - "electrical conductivity"
+    - "ec"
+    - "cond"
+    - "cond (us/cm)"
+    - "conductivity (umhos/cm)"
+    - "conductivity (us/cm)"
+    - "ec_uscm"
+
+  turbidity_ntu:
+    - "turbidity_ntu"
+    - "turbidity"
+    - "turbidity (ntu)"
+    - "turb"
+
+  tds_mgl:
+    - "tds_mgl"
+    - "tds"
+    - "total dissolved solids"
+    - "tds (mg/l)"
+    - "tds_mg/l"
+
+  temp_c:
+    - "temp_c"
+    - "temp"
+    - "temperature"
+    - "water temperature"
+    - "temp (c)"
+    - "temperature (c)"
+    - "temperature (deg c)"
+
+  total_coliform_mpn:
+    - "total_coliform_mpn"
+    - "total coliform"
+    - "tc"
+    - "total coliform (mpn/100ml)"
+    - "total_coliform"
+    - "tc_mpn"
+
+  faecal_coliform_mpn:
+    - "faecal_coliform_mpn"
+    - "faecal coliform"
+    - "fecal coliform"
+    - "fc"
+    - "faecal coliform (mpn/100ml)"
+    - "fecal coliform (mpn/100ml)"
+    - "fc_mpn"

@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Trends Analysis | RiverWatch 2026</title>
+  <link rel="stylesheet" href="/static/css/style.css">
+  <script src="https://cdn.plot.ly/plotly-2.32.0.min.js"></script>
+</head>
+<body>
+  <div class="app-container">
+    <!-- Sidebar -->
+    <aside class="sidebar">
+      <div class="sidebar-brand">
+        <div class="brand-icon">🌊</div>
+        <div>
+          <div class="brand-title">RiverWatch</div>
+          <div class="brand-tag">INTELLIGENCE 2026</div>
+        </div>
+      </div>
+
+      <ul class="nav-links">
+        <li class="nav-item"><a href="index.html"><span class="nav-icon">📊</span> <span>Dashboard</span></a></li>
+        <li class="nav-item"><a href="entry.html"><span class="nav-icon">📝</span> <span>Data Entry</span></a></li>
+        <li class="nav-item"><a href="upload.html"><span class="nav-icon">📤</span> <span>Upload & Validate</span></a></li>
+        <li class="nav-item"><a href="stations.html"><span class="nav-icon">📍</span> <span>Station Explorer</span></a></li>
+        <li class="nav-item active"><a href="trends.html"><span class="nav-icon">📈</span> <span>Trends Analysis</span></a></li>
+        <li class="nav-item"><a href="drivers.html"><span class="nav-icon">🧬</span> <span>Drivers & PCA</span></a></li>
+        <li class="nav-item"><a href="priority.html"><span class="nav-icon">🎯</span> <span>Sampling Priority</span></a></li>
+        <li class="nav-item"><a href="records.html"><span class="nav-icon">📋</span> <span>Records & Audit</span></a></li>
+        <li class="nav-item"><a href="export.html"><span class="nav-icon">📦</span> <span>Export & Reports</span></a></li>
+      </ul>
+
+      <div class="sidebar-footer">
+        <div id="dbStatusPill" class="db-status-pill">
+          <span>🍃</span> <span>Checking Database...</span>
+        </div>
+      </div>
+    </aside>
+
+    <!-- Main Content -->
+    <main class="main-wrapper">
+      <header class="page-header">
+        <div>
+          <h1 class="page-title">Non-Parametric Trend Intelligence</h1>
+          <p class="page-subtitle">Mann-Kendall test, Hamed-Rao autocorrelation correction, and Sen's slope annual degradation rates</p>
+        </div>
+        <div class="header-actions">
+          <a href="entry.html" class="btn btn-primary">📝 Add Field Sample</a>
+          <select id="trendParamSelect" class="select-control" style="font-weight: 600; width: auto;">
+            <option value="wqi">WQI (Water Quality Index)</option>
+            <option value="do_mgl">Dissolved Oxygen (DO)</option>
+            <option value="bod_mgl">BOD (mg/L)</option>
+            <option value="cod_mgl">COD (mg/L)</option>
+            <option value="nitrate_mgl">Nitrate (mg/L)</option>
+            <option value="ammonia_mgl">Free Ammonia (mg/L)</option>
+            <option value="conductivity_uscm">Conductivity (µS/cm)</option>
+            <option value="turbidity_ntu">Turbidity (NTU)</option>
+            <option value="total_coliform_mpn">Total Coliform (MPN)</option>
+          </select>
+          <select id="significanceFilter" class="select-control" style="width: auto;">
+            <option value="all">All Trends</option>
+            <option value="sig" selected>Statistically Significant (p &lt; 0.05)</option>
+          </select>
+        </div>
+      </header>
+
+      <!-- Easy Understanding Guidance Banner -->
+      <section class="guide-banner" style="margin-bottom: 24px;">
+        <div class="guide-step">
+          <div class="step-num" style="background: var(--accent-rose);">📉</div>
+          <div>
+            <div class="step-title">Sen's Slope Rate</div>
+            <div class="step-desc">Tells you the exact annual rate of change in physical units (e.g., +2.4 WQI/year)</div>
+          </div>
+        </div>
+        <div class="guide-arrow">→</div>
+        <div class="guide-step">
+          <div class="step-num" style="background: var(--accent-purple);">📐</div>
+          <div>
+            <div class="step-title">Mann-Kendall p-value</div>
+            <div class="step-desc">If p &lt; 0.05, the trend is 95% statistically proven, not accidental weather variation</div>
+          </div>
+        </div>
+        <div class="guide-arrow">→</div>
+        <div class="guide-step">
+          <div class="step-num" style="background: var(--accent-primary);">🛡️</div>
+          <div>
+            <div class="step-title">Hamed-Rao Correction</div>
+            <div class="step-desc">Removes serial month-to-month dependency so monsoon spikes don't trigger false alarms</div>
+          </div>
+        </div>
+      </section>
+
+      <!-- KPI Summary Bento -->
+      <section class="bento-grid grid-cols-4" style="margin-bottom: 24px;">
+        <div class="glass-card kpi-card card-purple">
+          <div>
+            <div class="kpi-label">Evaluated Series</div>
+            <div id="kpiTotalTrends" class="kpi-value">--</div>
+            <div class="kpi-badge badge-purple">Monthly Aggregations</div>
+          </div>
+          <div class="kpi-icon" style="color: var(--accent-purple);">📐</div>
+        </div>
+
+        <div class="glass-card kpi-card card-rose">
+          <div>
+            <div class="kpi-label">Worsening Trends</div>
+            <div id="kpiWorseningCount" class="kpi-value" style="color: var(--accent-rose);">--</div>
+            <div class="kpi-badge badge-danger">Quality Decline</div>
+          </div>
+          <div class="kpi-icon" style="color: var(--accent-rose);">📉</div>
+        </div>
+
+        <div class="glass-card kpi-card card-emerald">
+          <div>
+            <div class="kpi-label">Improving Trends</div>
+            <div id="kpiImprovingCount" class="kpi-value" style="color: var(--accent-primary);">--</div>
+            <div class="kpi-badge badge-positive">Quality Recovery</div>
+          </div>
+          <div class="kpi-icon" style="color: var(--accent-primary);">📈</div>
+        </div>
+
+        <div class="glass-card kpi-card card-amber">
+          <div>
+            <div class="kpi-label">Stable / No Trend</div>
+            <div id="kpiNoTrendCount" class="kpi-value">--</div>
+            <div class="kpi-badge badge-warning">p ≥ 0.05</div>
+          </div>
+          <div class="kpi-icon" style="color: var(--accent-amber);">⚖️</div>
+        </div>
+      </section>
+
+      <!-- Sen's Slope Bar Chart Bento -->
+      <section class="glass-card" style="margin-bottom: 24px;">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px;">
+          <div>
+            <h3 style="font-size: 16px; font-weight: 700; color: #0f172a;">Sen's Slope: Annual Rate of Change Across Stations</h3>
+            <p style="font-size: 12px; color: var(--text-muted);">Red bars indicate deteriorating water; Green bars indicate recovering water</p>
+          </div>
+          <span class="status-pill pill-excellent">Sen-Theil Robust Estimator</span>
+        </div>
+        <div id="sensSlopeChart" class="chart-container"></div>
+      </section>
+
+      <!-- Full Trends Tabular Breakdown -->
+      <section class="glass-card">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px;">
+          <div>
+            <h3 style="font-size: 16px; font-weight: 700; color: #0f172a;">Mann-Kendall Statistical Results Table</h3>
+            <p style="font-size: 12px; color: var(--text-muted);">Detailed p-values, Kendall Tau correlation, and annual percentage change</p>
+          </div>
+          <span class="status-pill pill-good">95% Confidence Level</span>
+        </div>
+        <div class="table-responsive">
+          <table class="data-table">
+            <thead>
+              <tr>
+                <th>Station ID</th>
+                <th>Parameter</th>
+                <th>Test Applied</th>
+                <th>Trend Direction</th>
+                <th>Interpretation</th>
+                <th>Sen Slope (Annual)</th>
+                <th>Kendall Tau</th>
+                <th>Significance (p)</th>
+                <th>Change % / Year</th>
+              </tr>
+            </thead>
+            <tbody id="trendsTableBody">
+              <tr><td colspan="9" style="text-align: center; color: var(--text-muted); padding: 24px;">Computing trends...</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </section>
+    </main>
+  </div>
+
+  <script src="/static/js/app.js"></script>
+  <script src="/static/js/trends.js"></script>
+</body>
+</html>

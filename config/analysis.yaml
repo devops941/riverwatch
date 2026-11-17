@@ -1,0 +1,72 @@
+# RiverWatch Analysis & Standards Configurations
+
+wqi:
+  min_required_parameters: 4
+  mandatory_any_of: ["do_mgl", "bod_mgl"]
+  classes:
+    - { max: 25.0, label: "Excellent", color: "#10B981" }
+    - { max: 50.0, label: "Good", color: "#06B6D4" }
+    - { max: 75.0, label: "Poor", color: "#F59E0B" }
+    - { max: 100.0, label: "Very Poor", color: "#F97316" }
+    - { max: 9999.0, label: "Unsuitable", color: "#EF4444" }
+
+cpcb_classes:
+  # Designated Best Use Water Quality Criteria (CPCB Classes A to E)
+  # A: Drinking water source without conventional treatment but after disinfection
+  # B: Outdoor bathing (organized)
+  # C: Drinking water source after conventional treatment and disinfection
+  # D: Propagation of wild life and fisheries
+  # E: Irrigation, industrial cooling, controlled waste disposal
+  Class A:
+    description: "Drinking water source without conventional treatment but after disinfection"
+    do_min: 6.0
+    bod_max: 2.0
+    ph_min: 6.5
+    ph_max: 8.5
+    total_coliform_max: 50.0
+
+  Class B:
+    description: "Outdoor bathing (organized)"
+    do_min: 5.0
+    bod_max: 3.0
+    ph_min: 6.5
+    ph_max: 8.5
+    total_coliform_max: 500.0
+
+  Class C:
+    description: "Drinking water source after conventional treatment and disinfection"
+    do_min: 4.0
+    bod_max: 3.0
+    ph_min: 6.0
+    ph_max: 9.0
+    total_coliform_max: 5000.0
+
+  Class D:
+    description: "Propagation of Wildlife and Fisheries"
+    do_min: 4.0
+    ph_min: 6.5
+    ph_max: 8.5
+    free_ammonia_max: 1.2
+
+  Class E:
+    description: "Irrigation, Industrial Cooling, Controlled Waste Disposal"
+    ph_min: 6.0
+    ph_max: 8.5
+    conductivity_max: 2250.0
+
+priority_weights:
+  wqi_12m: 0.30
+  wqi_slope: 0.25
+  violation_rate: 0.20
+  recency: 0.15
+  variability_gap: 0.10
+
+driver_weights:
+  pca_loading: 0.35
+  correlation: 0.35
+  change_contribution: 0.30
+
+trends:
+  significance_alpha: 0.05
+  min_observations: 12
+  seasonal_period: 12

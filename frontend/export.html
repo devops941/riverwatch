@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Export & Reports | RiverWatch 2026</title>
+  <link rel="stylesheet" href="/static/css/style.css">
+</head>
+<body>
+  <div class="app-container">
+    <!-- Sidebar -->
+    <aside class="sidebar">
+      <div class="sidebar-brand">
+        <div class="brand-icon">🌊</div>
+        <div>
+          <div class="brand-title">RiverWatch</div>
+          <div class="brand-tag">INTELLIGENCE 2026</div>
+        </div>
+      </div>
+
+      <ul class="nav-links">
+        <li class="nav-item"><a href="index.html"><span class="nav-icon">📊</span> <span>Dashboard</span></a></li>
+        <li class="nav-item"><a href="entry.html"><span class="nav-icon">📝</span> <span>Data Entry</span></a></li>
+        <li class="nav-item"><a href="upload.html"><span class="nav-icon">📤</span> <span>Upload & Validate</span></a></li>
+        <li class="nav-item"><a href="stations.html"><span class="nav-icon">📍</span> <span>Station Explorer</span></a></li>
+        <li class="nav-item"><a href="trends.html"><span class="nav-icon">📈</span> <span>Trends Analysis</span></a></li>
+        <li class="nav-item"><a href="drivers.html"><span class="nav-icon">🧬</span> <span>Drivers & PCA</span></a></li>
+        <li class="nav-item"><a href="priority.html"><span class="nav-icon">🎯</span> <span>Sampling Priority</span></a></li>
+        <li class="nav-item"><a href="records.html"><span class="nav-icon">📋</span> <span>Records & Audit</span></a></li>
+        <li class="nav-item active"><a href="export.html"><span class="nav-icon">📦</span> <span>Export & Reports</span></a></li>
+      </ul>
+
+      <div class="sidebar-footer">
+        <div id="dbStatusPill" class="db-status-pill">
+          <span>🍃</span> <span>Checking Database...</span>
+        </div>
+      </div>
+    </aside>
+
+    <!-- Main Content -->
+    <main class="main-wrapper">
+      <header class="page-header">
+        <div>
+          <h1 class="page-title">Data Exports & Executive Reports</h1>
+          <p class="page-subtitle">Download clean datasets, multi-sheet analytical workbooks, and generate formal CPCB compliance audit PDFs</p>
+        </div>
+        <div class="header-actions">
+          <a href="entry.html" class="btn btn-primary">📝 Enter Sample Data</a>
+          <button type="button" class="btn btn-secondary" onclick="RiverWatch.openUploadModal()">⚡ Upload Data File</button>
+        </div>
+      </header>
+
+      <!-- Easy Understanding Guidance Banner -->
+      <section class="guide-banner" style="margin-bottom: 24px;">
+        <div class="guide-step">
+          <div class="step-num" style="background: var(--accent-primary);">1</div>
+          <div>
+            <div class="step-title">Cleaned CSV Data</div>
+            <div class="step-desc">For Python, R, and GIS analysis with normalized units & resolved values</div>
+          </div>
+        </div>
+        <div class="guide-arrow">→</div>
+        <div class="guide-step">
+          <div class="step-num" style="background: var(--accent-purple);">2</div>
+          <div>
+            <div class="step-title">Excel Analytics Workbook</div>
+            <div class="step-desc">5 formatted sheets with Station Priorities, Drivers, Trends & Correlations</div>
+          </div>
+        </div>
+        <div class="guide-arrow">→</div>
+        <div class="guide-step">
+          <div class="step-num" style="background: var(--accent-amber);">3</div>
+          <div>
+            <div class="step-title">Executive Audit PDF</div>
+            <div class="step-desc">Official CPCB compliance report with embedded high-resolution figures</div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Export Cards Bento with Distinct Colors -->
+      <section class="bento-grid grid-cols-3" style="margin-bottom: 24px;">
+        <!-- CSV Export (Bio-Emerald Card) -->
+        <div class="glass-card card-emerald">
+          <div class="tag-pill tag-pill-emerald">Tabular Dataset • GIS Ready</div>
+          <div style="width: 44px; height: 44px; border-radius: 10px; background: #ecfdf5; color: #047857; display: flex; align-items: center; justify-content: center; font-size: 22px; margin-bottom: 14px;">📊</div>
+          <h3 style="font-size: 17px; font-weight: 700; margin-bottom: 6px; color: #0f172a;">Cleaned Dataset (CSV)</h3>
+          <p style="font-size: 13px; color: var(--text-muted); margin-bottom: 20px; line-height: 1.45;">
+            Wide-format table with normalized units (mg/L, MPN), outlier treatment, and resolved censored values (&lt;DL → DL/2) ready for GIS and R/Python.
+          </p>
+          <a href="/api/export/data.csv" download class="btn btn-primary" style="width: 100%;">📥 Download CSV Data</a>
+        </div>
+
+        <!-- Excel Multi-Sheet Export (Royal Amethyst Purple Card) -->
+        <div class="glass-card card-purple">
+          <div class="tag-pill tag-pill-purple">5 Sheets • In-Depth Workbook</div>
+          <div style="width: 44px; height: 44px; border-radius: 10px; background: #f5f3ff; color: #6d28d9; display: flex; align-items: center; justify-content: center; font-size: 22px; margin-bottom: 14px;">📑</div>
+          <h3 style="font-size: 17px; font-weight: 700; margin-bottom: 6px; color: #0f172a;">Full Analytics Workbook (.XLSX)</h3>
+          <p style="font-size: 13px; color: var(--text-muted); margin-bottom: 20px; line-height: 1.45;">
+            Contains 5 comprehensive formatted sheets: Priority Roster, Key Drivers, Mann-Kendall Trends, WQI Ratings, and Spearman Correlation Matrix.
+          </p>
+          <a href="/api/export/results.xlsx" download class="btn btn-purple" style="width: 100%;">📥 Download Excel (.xlsx)</a>
+        </div>
+
+        <!-- PDF Executive Report Generator (Radiant Amber Gold Card) -->
+        <div class="glass-card card-amber">
+          <div class="tag-pill tag-pill-amber">Regulatory Audit • Publication Ready</div>
+          <div style="width: 44px; height: 44px; border-radius: 10px; background: #fffbeb; color: #b45309; display: flex; align-items: center; justify-content: center; font-size: 22px; margin-bottom: 14px;">📄</div>
+          <h3 style="font-size: 17px; font-weight: 700; margin-bottom: 6px; color: #0f172a;">Executive Audit PDF</h3>
+          <p style="font-size: 13px; color: var(--text-muted); margin-bottom: 20px; line-height: 1.45;">
+            Generates publication-quality CPCB environmental compliance audit PDF with embedded degradation profiles, KPI matrices, and priority actions.
+          </p>
+          <button id="generatePdfBtn" class="btn btn-amber" style="width: 100%;">⚡ Generate New PDF Report</button>
+        </div>
+      </section>
+
+      <!-- Previous Reports Section -->
+      <section class="glass-card">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px;">
+          <div>
+            <h3 style="font-size: 16px; font-weight: 700; color: #0f172a;">Historical Generated Executive Reports</h3>
+            <p style="font-size: 12px; color: var(--text-muted);">Audit log of generated PDF compliance reports stored in database</p>
+          </div>
+          <span class="status-pill pill-good">Synchronized with Database</span>
+        </div>
+        <div class="table-responsive">
+          <table class="data-table">
+            <thead>
+              <tr>
+                <th>Report ID</th>
+                <th>Generated Timestamp</th>
+                <th>File Format</th>
+                <th>Download Action</th>
+              </tr>
+            </thead>
+            <tbody id="reportsTableBody">
+              <tr><td colspan="4" style="text-align: center; color: var(--text-muted); padding: 24px;">Loading generated reports...</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </section>
+    </main>
+  </div>
+
+  <script src="/static/js/app.js"></script>
+  <script src="/static/js/export.js"></script>
+</body>
+</html>

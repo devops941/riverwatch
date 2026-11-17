@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Station Explorer | RiverWatch 2026</title>
+  <link rel="stylesheet" href="/static/css/style.css">
+  <script src="https://cdn.plot.ly/plotly-2.32.0.min.js"></script>
+</head>
+<body>
+  <div class="app-container">
+    <!-- Sidebar -->
+    <aside class="sidebar">
+      <div class="sidebar-brand">
+        <div class="brand-icon">🌊</div>
+        <div>
+          <div class="brand-title">RiverWatch</div>
+          <div class="brand-tag">INTELLIGENCE 2026</div>
+        </div>
+      </div>
+
+      <ul class="nav-links">
+        <li class="nav-item"><a href="index.html"><span class="nav-icon">📊</span> <span>Dashboard</span></a></li>
+        <li class="nav-item"><a href="entry.html"><span class="nav-icon">📝</span> <span>Data Entry</span></a></li>
+        <li class="nav-item"><a href="upload.html"><span class="nav-icon">📤</span> <span>Upload & Validate</span></a></li>
+        <li class="nav-item active"><a href="stations.html"><span class="nav-icon">📍</span> <span>Station Explorer</span></a></li>
+        <li class="nav-item"><a href="trends.html"><span class="nav-icon">📈</span> <span>Trends Analysis</span></a></li>
+        <li class="nav-item"><a href="drivers.html"><span class="nav-icon">🧬</span> <span>Drivers & PCA</span></a></li>
+        <li class="nav-item"><a href="priority.html"><span class="nav-icon">🎯</span> <span>Sampling Priority</span></a></li>
+        <li class="nav-item"><a href="records.html"><span class="nav-icon">📋</span> <span>Records & Audit</span></a></li>
+        <li class="nav-item"><a href="export.html"><span class="nav-icon">📦</span> <span>Export & Reports</span></a></li>
+      </ul>
+
+      <div class="sidebar-footer">
+        <div id="dbStatusPill" class="db-status-pill">
+          <span>🍃</span> <span>Checking Database...</span>
+        </div>
+      </div>
+    </aside>
+
+    <!-- Main Content -->
+    <main class="main-wrapper">
+      <header class="page-header">
+        <div>
+          <h1 class="page-title">Monitoring Station Explorer</h1>
+          <p class="page-subtitle">Deep dive into individual station telemetry, standards compliance, and seasonal cycles</p>
+        </div>
+        <div class="header-actions">
+          <a href="entry.html" class="btn btn-primary">📝 Add Sample for this Station</a>
+          <select id="stationSelect" class="select-control" style="min-width: 200px; font-weight: 700; width: auto;"></select>
+          <select id="paramSelect" class="select-control" style="min-width: 180px; font-weight: 600; width: auto;">
+            <option value="wqi">Water Quality Index (WQI)</option>
+            <option value="do_mgl">Dissolved Oxygen (DO)</option>
+            <option value="bod_mgl">BOD (mg/L)</option>
+            <option value="cod_mgl">COD (mg/L)</option>
+            <option value="nitrate_mgl">Nitrate (mg/L)</option>
+            <option value="ammonia_mgl">Free Ammonia (mg/L)</option>
+            <option value="conductivity_uscm">Conductivity (µS/cm)</option>
+            <option value="turbidity_ntu">Turbidity (NTU)</option>
+            <option value="tds_mgl">TDS (mg/L)</option>
+            <option value="temp_c">Temperature (°C)</option>
+            <option value="total_coliform_mpn">Total Coliform (MPN)</option>
+            <option value="faecal_coliform_mpn">Faecal Coliform (MPN)</option>
+          </select>
+        </div>
+      </header>
+
+      <!-- Easy Understanding Guidance Banner -->
+      <section class="guide-banner" style="margin-bottom: 24px;">
+        <div class="guide-step">
+          <div class="step-num" style="background: var(--accent-primary);">📍</div>
+          <div>
+            <div class="step-title">River Position Order</div>
+            <div class="step-desc">Stations are ordered from Upstream (#1 Rishikesh) to Downstream (#8 Diamond Harbour)</div>
+          </div>
+        </div>
+        <div class="guide-arrow">→</div>
+        <div class="guide-step">
+          <div class="step-num" style="background: var(--accent-purple);">🛡️</div>
+          <div>
+            <div class="step-title">CPCB Designated Class</div>
+            <div class="step-desc">Class A = Drinking water; Class B = Outdoor bathing; Class C/D/E = Fish/Wildlife/Irrigation</div>
+          </div>
+        </div>
+        <div class="guide-arrow">→</div>
+        <div class="guide-step">
+          <div class="step-num" style="background: var(--accent-rose);">🎯</div>
+          <div>
+            <div class="step-title">Sampling Priority</div>
+            <div class="step-desc">Stations with deteriorating trends and low compliance require immediate field inspection</div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Station Profile Bento Cards -->
+      <section class="bento-grid grid-cols-4" style="margin-bottom: 24px;">
+        <div class="glass-card kpi-card card-emerald">
+          <div>
+            <div class="kpi-label">River Position</div>
+            <div id="stnOrderVal" class="kpi-value">#1</div>
+            <div id="stnRiverName" class="kpi-badge badge-positive">Ganga Basin</div>
+          </div>
+          <div class="kpi-icon" style="color: var(--accent-primary);">🧭</div>
+        </div>
+
+        <div class="glass-card kpi-card card-purple">
+          <div>
+            <div class="kpi-label">Latest WQI Rating</div>
+            <div id="stnLatestWqi" class="kpi-value">--</div>
+            <div id="stnWqiPill" class="kpi-badge badge-purple">Evaluating</div>
+          </div>
+          <div class="kpi-icon" style="color: var(--accent-purple);">💧</div>
+        </div>
+
+        <div class="glass-card kpi-card card-amber">
+          <div>
+            <div class="kpi-label">CPCB Designated Class</div>
+            <div id="stnCpcbClass" class="kpi-value" style="font-size: 24px; margin-top: 8px;">--</div>
+            <div id="stnComplianceBadge" class="kpi-badge badge-warning">Criteria Status</div>
+          </div>
+          <div class="kpi-icon" style="color: var(--accent-amber);">🛡️</div>
+        </div>
+
+        <div class="glass-card kpi-card card-rose">
+          <div>
+            <div class="kpi-label">Sampling Priority Score</div>
+            <div id="stnPriorityScore" class="kpi-value">--</div>
+            <div id="stnPriorityRank" class="kpi-badge badge-danger">Rank #--</div>
+          </div>
+          <div class="kpi-icon" style="color: var(--accent-rose);">🎯</div>
+        </div>
+      </section>
+
+      <!-- Time Series Chart Bento -->
+      <section class="glass-card" style="margin-bottom: 24px;">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px;">
+          <div>
+            <h3 id="timeSeriesTitle" style="font-size: 16px; font-weight: 700; color: #0f172a;">Historical Parameter Trajectory</h3>
+            <p style="font-size: 12px; color: var(--text-muted);">Longitudinal sampling observations plotted against regulatory standards</p>
+          </div>
+          <span id="standardLimitBadge" class="status-pill pill-good">Evaluating Limits</span>
+        </div>
+        <div id="timeSeriesChart" class="chart-container"></div>
+      </section>
+
+      <!-- Violations & Seasonal Analysis Grid -->
+      <section class="bento-grid grid-cols-2">
+        <!-- Parameter Violations Summary -->
+        <div class="glass-card">
+          <h3 style="font-size: 16px; font-weight: 700; margin-bottom: 6px; color: #0f172a;">CPCB Water Quality Standard Violations</h3>
+          <p style="font-size: 12px; color: var(--text-muted); margin-bottom: 14px;">Parameters exceeding permissible limits for designated river uses</p>
+          <div id="violationsList" style="display: flex; flex-direction: column; gap: 8px;">
+            <div style="color: var(--text-muted); font-size: 13px;">Loading violations data...</div>
+          </div>
+        </div>
+
+        <!-- Station Metadata & Geo Info -->
+        <div class="glass-card">
+          <h3 style="font-size: 16px; font-weight: 700; margin-bottom: 6px; color: #0f172a;">Station Telemetry Metadata</h3>
+          <p style="font-size: 12px; color: var(--text-muted); margin-bottom: 14px;">Geographic coordinates, river stretch info, and sampling history</p>
+          <div id="stationMetaBox" style="font-size: 13px; line-height: 1.8; color: var(--text-secondary);">
+            Loading station coordinates and metadata...
+          </div>
+        </div>
+      </section>
+    </main>
+  </div>
+
+  <script src="/static/js/app.js"></script>
+  <script src="/static/js/stations.js"></script>
+</body>
+</html>

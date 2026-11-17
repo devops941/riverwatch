@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Sampling Priority Scoring | RiverWatch 2026</title>
+  <link rel="stylesheet" href="/static/css/style.css">
+  <script src="https://cdn.plot.ly/plotly-2.32.0.min.js"></script>
+</head>
+<body>
+  <div class="app-container">
+    <!-- Sidebar -->
+    <aside class="sidebar">
+      <div class="sidebar-brand">
+        <div class="brand-icon">🌊</div>
+        <div>
+          <div class="brand-title">RiverWatch</div>
+          <div class="brand-tag">INTELLIGENCE 2026</div>
+        </div>
+      </div>
+
+      <ul class="nav-links">
+        <li class="nav-item"><a href="index.html"><span class="nav-icon">📊</span> <span>Dashboard</span></a></li>
+        <li class="nav-item"><a href="entry.html"><span class="nav-icon">📝</span> <span>Data Entry</span></a></li>
+        <li class="nav-item"><a href="upload.html"><span class="nav-icon">📤</span> <span>Upload & Validate</span></a></li>
+        <li class="nav-item"><a href="stations.html"><span class="nav-icon">📍</span> <span>Station Explorer</span></a></li>
+        <li class="nav-item"><a href="trends.html"><span class="nav-icon">📈</span> <span>Trends Analysis</span></a></li>
+        <li class="nav-item"><a href="drivers.html"><span class="nav-icon">🧬</span> <span>Drivers & PCA</span></a></li>
+        <li class="nav-item active"><a href="priority.html"><span class="nav-icon">🎯</span> <span>Sampling Priority</span></a></li>
+        <li class="nav-item"><a href="records.html"><span class="nav-icon">📋</span> <span>Records & Audit</span></a></li>
+        <li class="nav-item"><a href="export.html"><span class="nav-icon">📦</span> <span>Export & Reports</span></a></li>
+      </ul>
+
+      <div class="sidebar-footer">
+        <div id="dbStatusPill" class="db-status-pill">
+          <span>🍃</span> <span>Checking Database...</span>
+        </div>
+      </div>
+    </aside>
+
+    <!-- Main Content -->
+    <main class="main-wrapper">
+      <header class="page-header">
+        <div>
+          <h1 class="page-title">Sampling Prioritization Engine</h1>
+          <p class="page-subtitle">Multi-criteria allocation of monitoring resources: recent degradation, trend slope, violation rate, and recency</p>
+        </div>
+        <div class="header-actions">
+          <a href="entry.html" class="btn btn-primary">📝 Add Field Sample</a>
+          <button id="resetWeightsBtn" class="btn btn-secondary">🔄 Reset Weights</button>
+        </div>
+      </header>
+
+      <!-- Easy Understanding Guidance Banner -->
+      <section class="guide-banner" style="margin-bottom: 24px;">
+        <div class="guide-step">
+          <div class="step-num" style="background: var(--accent-rose);">1</div>
+          <div>
+            <div class="step-title">Why Prioritize?</div>
+            <div class="step-desc">Field inspectors cannot visit all 8 stations simultaneously. Priority scores direct resources where risk is highest.</div>
+          </div>
+        </div>
+        <div class="guide-arrow">→</div>
+        <div class="guide-step">
+          <div class="step-num" style="background: var(--accent-purple);">2</div>
+          <div>
+            <div class="step-title">Interactive Weights</div>
+            <div class="step-desc">Drag the sliders on the left to adapt the model to current environmental policy requirements</div>
+          </div>
+        </div>
+        <div class="guide-arrow">→</div>
+        <div class="guide-step">
+          <div class="step-num" style="background: var(--accent-primary);">3</div>
+          <div>
+            <div class="step-title">Actionable Recommendation</div>
+            <div class="step-desc">Each station receives an explicit, audit-ready operational action (e.g. "Increase to weekly sampling")</div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Main Layout: Controls Sliders (Left) & Priority Ranking (Right) -->
+      <section class="bento-grid grid-cols-3" style="margin-bottom: 24px;">
+        <!-- Dynamic Sliders Card -->
+        <div class="glass-card card-purple">
+          <div class="tag-pill tag-pill-purple">Policy Customizer</div>
+          <h3 style="font-size: 16px; font-weight: 700; margin-bottom: 6px; color: #0f172a;">Live Weight Modeler</h3>
+          <p style="font-size: 12px; color: var(--text-muted); margin-bottom: 20px;">Adjust policy criteria to recalculate prioritization scores in real-time</p>
+
+          <div class="slider-container">
+            <div class="slider-label">
+              <span>Recent Mean WQI (12m)</span>
+              <span id="label_wqi_12m">30%</span>
+            </div>
+            <input type="range" id="weight_wqi_12m" class="range-slider" min="0" max="100" value="30">
+          </div>
+
+          <div class="slider-container">
+            <div class="slider-label">
+              <span>Worsening Trend (Sen Slope)</span>
+              <span id="label_wqi_slope">25%</span>
+            </div>
+            <input type="range" id="weight_wqi_slope" class="range-slider" min="0" max="100" value="25">
+          </div>
+
+          <div class="slider-container">
+            <div class="slider-label">
+              <span>Standards Violation Rate</span>
+              <span id="label_violation_rate">20%</span>
+            </div>
+            <input type="range" id="weight_violation_rate" class="range-slider" min="0" max="100" value="20">
+          </div>
+
+          <div class="slider-container">
+            <div class="slider-label">
+              <span>Sampling Recency (Days Lapsed)</span>
+              <span id="label_recency">15%</span>
+            </div>
+            <input type="range" id="weight_recency" class="range-slider" min="0" max="100" value="15">
+          </div>
+
+          <div class="slider-container">
+            <div class="slider-label">
+              <span>Data Gaps / Volatility</span>
+              <span id="label_variability_gap">10%</span>
+            </div>
+            <input type="range" id="weight_variability_gap" class="range-slider" min="0" max="100" value="10">
+          </div>
+
+          <div style="font-size: 11.5px; color: var(--text-muted); margin-top: 10px; border-top: 1px solid var(--border-subtle); padding-top: 10px;">
+            ⚡ Weights auto-normalize dynamically during real-time re-ranking.
+          </div>
+        </div>
+
+        <!-- Priority Ranking Horizontal Bar Chart (Right 2 cols) -->
+        <div class="glass-card grid-span-2">
+          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 14px;">
+            <div>
+              <h3 style="font-size: 16px; font-weight: 700; color: #0f172a;">Station Priority Ranking</h3>
+              <p style="font-size: 12px; color: var(--text-muted);">Red = Critical urgency; Amber = High priority; Green = Routine</p>
+            </div>
+            <span class="status-pill pill-unsuitable">Rank #1: Immediate Action</span>
+          </div>
+          <div id="priorityRankChart" class="chart-container" style="height: 380px;"></div>
+        </div>
+      </section>
+
+      <!-- Detailed Prioritization Breakdown Table -->
+      <section class="glass-card">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px;">
+          <div>
+            <h3 style="font-size: 16px; font-weight: 700; color: #0f172a;">Official Monitoring Roster & Recommended Actions</h3>
+            <p style="font-size: 12px; color: var(--text-muted);">Automated recommendations grounded in CPCB compliance thresholds</p>
+          </div>
+          <span class="status-pill pill-good">Active Monitoring Roster</span>
+        </div>
+        <div class="table-responsive">
+          <table class="data-table">
+            <thead>
+              <tr>
+                <th>Rank</th>
+                <th>Station Name</th>
+                <th>Priority Score</th>
+                <th>12m Mean WQI</th>
+                <th>Sen Slope</th>
+                <th>Violation Rate</th>
+                <th>Days Lapsed</th>
+                <th>Inspection Rationale</th>
+                <th>Action Recommendation</th>
+              </tr>
+            </thead>
+            <tbody id="priorityTableBody">
+              <tr><td colspan="9" style="text-align: center; color: var(--text-muted); padding: 24px;">Computing prioritization scores...</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </section>
+    </main>
+  </div>
+
+  <script src="/static/js/app.js"></script>
+  <script src="/static/js/priority.js"></script>
+</body>
+</html>

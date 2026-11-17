@@ -1,0 +1,226 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>RiverWatch 2026 | River Health Intelligence</title>
+  <link rel="stylesheet" href="/static/css/style.css">
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+  <script src="https://cdn.plot.ly/plotly-2.32.0.min.js"></script>
+</head>
+<body>
+  <div class="app-container">
+    <!-- Sidebar -->
+    <aside class="sidebar">
+      <div class="sidebar-brand">
+        <div class="brand-icon">🌊</div>
+        <div>
+          <div class="brand-title">RiverWatch</div>
+          <div class="brand-tag">INTELLIGENCE 2026</div>
+        </div>
+      </div>
+
+      <ul class="nav-links">
+        <li class="nav-item active"><a href="index.html"><span class="nav-icon">📊</span> <span>Dashboard</span></a></li>
+        <li class="nav-item"><a href="entry.html"><span class="nav-icon">📝</span> <span>Data Entry</span></a></li>
+        <li class="nav-item"><a href="upload.html"><span class="nav-icon">📤</span> <span>Upload & Validate</span></a></li>
+        <li class="nav-item"><a href="stations.html"><span class="nav-icon">📍</span> <span>Station Explorer</span></a></li>
+        <li class="nav-item"><a href="trends.html"><span class="nav-icon">📈</span> <span>Trends Analysis</span></a></li>
+        <li class="nav-item"><a href="drivers.html"><span class="nav-icon">🧬</span> <span>Drivers & PCA</span></a></li>
+        <li class="nav-item"><a href="priority.html"><span class="nav-icon">🎯</span> <span>Sampling Priority</span></a></li>
+        <li class="nav-item"><a href="records.html"><span class="nav-icon">📋</span> <span>Records & Audit</span></a></li>
+        <li class="nav-item"><a href="export.html"><span class="nav-icon">📦</span> <span>Export & Reports</span></a></li>
+      </ul>
+
+      <div class="sidebar-footer">
+        <div id="dbStatusPill" class="db-status-pill">
+          <span>🍃</span> <span>Checking Database...</span>
+        </div>
+      </div>
+    </aside>
+
+    <!-- Main Content -->
+    <main class="main-wrapper">
+      <header class="page-header">
+        <div>
+          <h1 class="page-title">River Basin Health Overview</h1>
+          <p class="page-subtitle">Real-time multi-indicator monitoring, longitudinal river degradation profile & automated alerts</p>
+        </div>
+        <div class="header-actions">
+          <a href="entry.html" class="btn btn-primary">📝 Enter Sample Data</a>
+          <button type="button" class="btn btn-secondary" onclick="RiverWatch.openUploadModal()">⚡ Upload Data File</button>
+          <button id="refreshBtn" class="btn btn-secondary">🔄 Refresh</button>
+        </div>
+      </header>
+
+      <!-- Easy Understanding Workflow Banner -->
+      <section class="guide-banner">
+        <div class="guide-step">
+          <div class="step-num" style="background: var(--accent-primary);">1</div>
+          <div>
+            <div class="step-title">Enter or Upload Data</div>
+            <div class="step-desc">Manual lab data entry or bulk CSV/Excel ingestion from PCB</div>
+          </div>
+        </div>
+        <div class="guide-arrow">→</div>
+        <div class="guide-step">
+          <div class="step-num" style="background: var(--accent-purple);">2</div>
+          <div>
+            <div class="step-title">10 Rule Validation</div>
+            <div class="step-desc">Automatic range, unit conversion (µg/L → mg/L), and outlier audit</div>
+          </div>
+        </div>
+        <div class="guide-arrow">→</div>
+        <div class="guide-step">
+          <div class="step-num" style="background: var(--accent-amber);">3</div>
+          <div>
+            <div class="step-title">Basin Analytics</div>
+            <div class="step-desc">WQI, Sen's slopes, PCA drivers & high-risk stations</div>
+          </div>
+        </div>
+        <div class="guide-arrow">→</div>
+        <div class="guide-step">
+          <div class="step-num" style="background: var(--accent-rose);">4</div>
+          <div>
+            <div class="step-title">Executive Reports</div>
+            <div class="step-desc">Download CPCB audit PDFs and 5-sheet analytical workbooks</div>
+          </div>
+        </div>
+      </section>
+
+      <!-- KPI Bento Grid -->
+      <section class="bento-grid grid-cols-4" style="margin-bottom: 24px;">
+        <div class="glass-card kpi-card card-emerald">
+          <div>
+            <div class="kpi-label">Active Stations</div>
+            <div id="kpiStations" class="kpi-value">--</div>
+            <div class="kpi-badge badge-positive">● Upstream to Downstream</div>
+          </div>
+          <div class="kpi-icon" style="color: var(--accent-primary);">📍</div>
+        </div>
+
+        <div class="glass-card kpi-card card-purple">
+          <div>
+            <div class="kpi-label">Validated Samples</div>
+            <div id="kpiSamples" class="kpi-value">--</div>
+            <div class="kpi-badge badge-purple">✓ Quality Audited</div>
+          </div>
+          <div class="kpi-icon" style="color: var(--accent-purple);">🧪</div>
+        </div>
+
+        <div class="glass-card kpi-card card-amber">
+          <div>
+            <div class="kpi-label">Basin Mean WQI</div>
+            <div id="kpiMeanWqi" class="kpi-value">--</div>
+            <div id="kpiWqiBadge" class="kpi-badge badge-warning">Evaluating...</div>
+          </div>
+          <div class="kpi-icon" style="color: var(--accent-amber);">💧</div>
+        </div>
+
+        <div class="glass-card kpi-card card-rose">
+          <div>
+            <div class="kpi-label">CPCB Class B Compliance</div>
+            <div id="kpiClassB" class="kpi-value">--%</div>
+            <div class="kpi-badge badge-danger">Designated Bathing</div>
+          </div>
+          <div class="kpi-icon" style="color: var(--accent-rose);">🛡️</div>
+        </div>
+      </section>
+
+      <!-- Educational WQI Guide Banner -->
+      <section class="glass-card" style="margin-bottom: 24px; padding: 20px 24px;">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 14px;">
+          <h3 style="font-size: 14px; font-weight: 700; color: #0f172a; display: flex; align-items: center; gap: 8px;">
+            <span>💡</span> <span>Quick Guide: What does the Water Quality Index (WQI) score mean?</span>
+          </h3>
+          <span style="font-size: 12px; color: var(--text-muted);">Lower WQI number indicates cleaner water</span>
+        </div>
+        <div style="display: grid; grid-template-columns: repeat(5, 1fr); gap: 12px; text-align: center;">
+          <div style="background: #ecfdf5; border: 1px solid #a7f3d0; border-radius: 8px; padding: 12px 10px;">
+            <div style="font-weight: 800; color: #047857; font-size: 15px;">0 – 25</div>
+            <div style="font-size: 12px; font-weight: 700; color: #047857; margin-top: 2px;">Excellent (Class A)</div>
+            <div style="font-size: 11px; color: #475569; margin-top: 4px;">Pristine headwaters; safe drinking source</div>
+          </div>
+          <div style="background: #f0fdfa; border: 1px solid #99f6e4; border-radius: 8px; padding: 12px 10px;">
+            <div style="font-weight: 800; color: #0f766e; font-size: 15px;">26 – 50</div>
+            <div style="font-size: 12px; font-weight: 700; color: #0f766e; margin-top: 2px;">Good (Class B)</div>
+            <div style="font-size: 11px; color: #475569; margin-top: 4px;">Safe for swimming & outdoor bathing</div>
+          </div>
+          <div style="background: #fffbeb; border: 1px solid #fde68a; border-radius: 8px; padding: 12px 10px;">
+            <div style="font-weight: 800; color: #b45309; font-size: 15px;">51 – 75</div>
+            <div style="font-size: 12px; font-weight: 700; color: #b45309; margin-top: 2px;">Poor (Class C)</div>
+            <div style="font-size: 11px; color: #475569; margin-top: 4px;">Stressed ecosystem; needs treatment</div>
+          </div>
+          <div style="background: #fff7ed; border: 1px solid #fed7aa; border-radius: 8px; padding: 12px 10px;">
+            <div style="font-weight: 800; color: #c2410c; font-size: 15px;">76 – 100</div>
+            <div style="font-size: 12px; font-weight: 700; color: #c2410c; margin-top: 2px;">Very Poor (Class D)</div>
+            <div style="font-size: 11px; color: #475569; margin-top: 4px;">High domestic & industrial sewage load</div>
+          </div>
+          <div style="background: #fff1f2; border: 1px solid #fecdd3; border-radius: 8px; padding: 12px 10px;">
+            <div style="font-weight: 800; color: #be123c; font-size: 15px;">&gt; 100</div>
+            <div style="font-size: 12px; font-weight: 700; color: #be123c; margin-top: 2px;">Unsuitable (Class E)</div>
+            <div style="font-size: 11px; color: #475569; margin-top: 4px;">Critical hazard; toxic to aquatic life</div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Map & Longitudinal Degradation Bento -->
+      <section class="bento-grid grid-cols-2" style="margin-bottom: 24px;">
+        <!-- River Basin Leaflet Map -->
+        <div class="glass-card">
+          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 14px;">
+            <div>
+              <h3 style="font-size: 16px; font-weight: 700;">River Monitoring Network (CPCB Standards)</h3>
+              <p style="font-size: 12px; color: var(--text-muted);">Green indicates clean headwaters; Orange/Red marks high pollution</p>
+            </div>
+            <span class="status-pill pill-excellent" id="mapStatusPill">Live Geospatial View</span>
+          </div>
+          <div id="riverMap" class="map-container"></div>
+        </div>
+
+        <!-- Upstream to Downstream Longitudinal Profile -->
+        <div class="glass-card">
+          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 14px;">
+            <div>
+              <h3 style="font-size: 16px; font-weight: 700;">Longitudinal River Degradation (Upstream → Downstream)</h3>
+              <p style="font-size: 12px; color: var(--text-muted);">Cumulative pollution increases as the river flows past industrial cities</p>
+            </div>
+            <span style="font-size: 12px; color: var(--text-muted);">CPCB Thresholds</span>
+          </div>
+          <div id="profileChart" class="chart-container"></div>
+        </div>
+      </section>
+
+      <!-- Time Series & Urgent Action Stations -->
+      <section class="bento-grid grid-cols-3">
+        <!-- Temporal WQI Distribution -->
+        <div class="glass-card grid-span-2">
+          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 14px;">
+            <div>
+              <h3 style="font-size: 16px; font-weight: 700;">Basin-wide Water Quality Index Trajectory</h3>
+              <p style="font-size: 12px; color: var(--text-muted);">Multi-year time series showing monsoon dilution and seasonal cycles</p>
+            </div>
+            <div style="font-size: 12px; color: var(--text-muted);">Monthly Average</div>
+          </div>
+          <div id="temporalChart" class="chart-container"></div>
+        </div>
+
+        <!-- High Priority Urgent Action Stations -->
+        <div class="glass-card">
+          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 14px;">
+            <h3 style="font-size: 16px; font-weight: 700;">Urgent Inspection Alerts</h3>
+            <a href="priority.html" style="font-size: 12px; color: var(--accent-primary); text-decoration: none; font-weight: 700;">Full Priority Roster →</a>
+          </div>
+          <div id="urgentAlertsList" style="display: flex; flex-direction: column; gap: 10px; margin-top: 10px;">
+            <div style="color: var(--text-muted); font-size: 13px;">Loading priority alerts...</div>
+          </div>
+        </div>
+      </section>
+    </main>
+  </div>
+
+  <script src="/static/js/app.js"></script>
+  <script src="/static/js/dashboard.js"></script>
+</body>
+</html>

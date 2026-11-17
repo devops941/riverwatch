@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Records & Audit Trail | RiverWatch 2026</title>
+  <link rel="stylesheet" href="/static/css/style.css">
+</head>
+<body>
+  <div class="app-container">
+    <!-- Sidebar -->
+    <aside class="sidebar">
+      <div class="sidebar-brand">
+        <div class="brand-icon">🌊</div>
+        <div>
+          <div class="brand-title">RiverWatch</div>
+          <div class="brand-tag">INTELLIGENCE 2026</div>
+        </div>
+      </div>
+
+      <ul class="nav-links">
+        <li class="nav-item"><a href="index.html"><span class="nav-icon">📊</span> <span>Dashboard</span></a></li>
+        <li class="nav-item"><a href="entry.html"><span class="nav-icon">📝</span> <span>Data Entry</span></a></li>
+        <li class="nav-item"><a href="upload.html"><span class="nav-icon">📤</span> <span>Upload & Validate</span></a></li>
+        <li class="nav-item"><a href="stations.html"><span class="nav-icon">📍</span> <span>Station Explorer</span></a></li>
+        <li class="nav-item"><a href="trends.html"><span class="nav-icon">📈</span> <span>Trends Analysis</span></a></li>
+        <li class="nav-item"><a href="drivers.html"><span class="nav-icon">🧬</span> <span>Drivers & PCA</span></a></li>
+        <li class="nav-item"><a href="priority.html"><span class="nav-icon">🎯</span> <span>Sampling Priority</span></a></li>
+        <li class="nav-item active"><a href="records.html"><span class="nav-icon">📋</span> <span>Records & Audit</span></a></li>
+        <li class="nav-item"><a href="export.html"><span class="nav-icon">📦</span> <span>Export & Reports</span></a></li>
+      </ul>
+
+      <div class="sidebar-footer">
+        <div id="dbStatusPill" class="db-status-pill">
+          <span>🍃</span> <span>Checking Database...</span>
+        </div>
+      </div>
+    </aside>
+
+    <!-- Main Content -->
+    <main class="main-wrapper">
+      <header class="page-header">
+        <div>
+          <h1 class="page-title">Monitoring Records & Audit Trail</h1>
+          <p class="page-subtitle">Inspect committed sample records, review lab measurements, and correct values with immutable audit logging</p>
+        </div>
+        <div class="header-actions">
+          <a href="entry.html" class="btn btn-primary">➕ Add New Sample Entry</a>
+          <select id="stationFilter" class="select-control" style="min-width: 200px; width: auto;">
+            <option value="">All Monitoring Stations</option>
+          </select>
+        </div>
+      </header>
+
+      <!-- Easy Understanding Guidance Banner -->
+      <section class="guide-banner" style="margin-bottom: 24px;">
+        <div class="guide-step">
+          <div class="step-num" style="background: var(--accent-primary);">📋</div>
+          <div>
+            <div class="step-title">Verified Water Records</div>
+            <div class="step-desc">All committed samples stored in MongoDB/SQLite with calculated WQI and CPCB best-use classifications</div>
+          </div>
+        </div>
+        <div class="guide-arrow">→</div>
+        <div class="guide-step">
+          <div class="step-num" style="background: var(--accent-purple);">✏️</div>
+          <div>
+            <div class="step-title">Inline Value Correction</div>
+            <div class="step-desc">Click "Correct" on any row to fix lab reporting errors or typos without losing historical integrity</div>
+          </div>
+        </div>
+        <div class="guide-arrow">→</div>
+        <div class="guide-step">
+          <div class="step-num" style="background: var(--accent-amber);">📜</div>
+          <div>
+            <div class="step-title">Immutable Audit Trail</div>
+            <div class="step-desc">Every edit records original value, revised value, timestamp, user, and justification for CPCB compliance</div>
+          </div>
+        </div>
+      </section>
+
+      <!-- View Selector Tabs -->
+      <div style="display: flex; gap: 10px; margin-bottom: 20px;">
+        <button id="tabRecordsBtn" class="btn btn-primary">📋 Processed Records</button>
+        <button id="tabAuditBtn" class="btn btn-secondary">📜 Corrections Audit Trail</button>
+      </div>
+
+      <!-- Processed Records View -->
+      <section id="recordsViewSection" class="glass-card">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 14px;">
+          <h3 style="font-size: 16px; font-weight: 700; color: #0f172a;">Committed Water Quality Samples</h3>
+          <div id="paginationInfo" style="font-size: 13px; color: var(--text-muted);">Page 1 of 1</div>
+        </div>
+
+        <div class="table-responsive">
+          <table class="data-table">
+            <thead>
+              <tr>
+                <th>Sample ID</th>
+                <th>Station</th>
+                <th>Date</th>
+                <th>WQI</th>
+                <th>Class</th>
+                <th>CPCB</th>
+                <th>DO (mg/L)</th>
+                <th>BOD (mg/L)</th>
+                <th>COD (mg/L)</th>
+                <th>Nitrate</th>
+                <th>Actions</th>
+              </tr>
+            </thead>
+            <tbody id="recordsTableBody">
+              <tr><td colspan="11" style="text-align: center; color: var(--text-muted); padding: 24px;">Loading records...</td></tr>
+            </tbody>
+          </table>
+        </div>
+
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 18px;">
+          <button id="prevPageBtn" class="btn btn-secondary btn-sm">← Previous Page</button>
+          <span id="pageIndicator" style="font-size: 12.5px; font-weight: 600;">Page 1</span>
+          <button id="nextPageBtn" class="btn btn-secondary btn-sm">Next Page →</button>
+        </div>
+      </section>
+
+      <!-- Audit Trail View -->
+      <section id="auditViewSection" class="glass-card" style="display: none;">
+        <h3 style="font-size: 16px; font-weight: 700; margin-bottom: 14px; color: #0f172a;">Immutable Corrections Audit Log</h3>
+        <div class="table-responsive">
+          <table class="data-table">
+            <thead>
+              <tr>
+                <th>Log ID</th>
+                <th>Sample ID</th>
+                <th>Parameter</th>
+                <th>Original Value</th>
+                <th>Corrected Value</th>
+                <th>Justification</th>
+                <th>Timestamp</th>
+              </tr>
+            </thead>
+            <tbody id="auditTableBody">
+              <tr><td colspan="7" style="text-align: center; color: var(--text-muted); padding: 24px;">No manual corrections recorded yet.</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </section>
+    </main>
+  </div>
+
+  <!-- Manual Correction Modal -->
+  <div id="editModal" class="modal-overlay" style="display: none;">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h3 style="font-size: 17px; font-weight: 700; color: #0f172a;">Audit-Logged Value Correction</h3>
+        <button type="button" class="modal-close-btn" id="closeEditModalBtn">✕</button>
+      </div>
+      <div id="editModalMeta" style="font-size: 13px; color: var(--text-secondary); margin-bottom: 14px;"></div>
+
+      <div style="margin-bottom: 14px;">
+        <label style="font-size: 12px; font-weight: 600; text-transform: uppercase; color: var(--text-muted); display: block; margin-bottom: 6px;">Parameter</label>
+        <select id="editParamSelect" class="select-control" style="width: 100%;">
+          <option value="do_mgl">DO (mg/L)</option>
+          <option value="bod_mgl">BOD (mg/L)</option>
+          <option value="cod_mgl">COD (mg/L)</option>
+          <option value="nitrate_mgl">Nitrate (mg/L)</option>
+          <option value="ammonia_mgl">Ammonia (mg/L)</option>
+          <option value="turbidity_ntu">Turbidity (NTU)</option>
+          <option value="ph">pH</option>
+          <option value="total_coliform_mpn">Total Coliform (MPN)</option>
+          <option value="faecal_coliform_mpn">Faecal Coliform (MPN)</option>
+        </select>
+      </div>
+
+      <div style="margin-bottom: 14px;">
+        <label style="font-size: 12px; font-weight: 600; text-transform: uppercase; color: var(--text-muted); display: block; margin-bottom: 6px;">Corrected Value</label>
+        <input type="number" step="any" id="editNewVal" class="input-control" style="width: 100%;" placeholder="Enter corrected numeric value...">
+      </div>
+
+      <div style="margin-bottom: 20px;">
+        <label style="font-size: 12px; font-weight: 600; text-transform: uppercase; color: var(--text-muted); display: block; margin-bottom: 6px;">Audit Justification</label>
+        <input type="text" id="editReason" class="input-control" style="width: 100%;" value="Laboratory re-titration verified by environmental analyst">
+      </div>
+
+      <div style="display: flex; justify-content: flex-end; gap: 10px;">
+        <button id="cancelEditBtn" class="btn btn-secondary">Cancel</button>
+        <button id="saveEditBtn" class="btn btn-primary">Save & Re-run Analytics</button>
+      </div>
+    </div>
+  </div>
+
+  <script src="/static/js/app.js"></script>
+  <script src="/static/js/records.js"></script>
+</body>
+</html>

@@ -1,0 +1,344 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Direct Data Entry | RiverWatch 2026</title>
+  <link rel="stylesheet" href="/static/css/style.css">
+</head>
+<body>
+  <div class="app-container">
+    <!-- Sidebar -->
+    <aside class="sidebar">
+      <div class="sidebar-brand">
+        <div class="brand-icon">🌊</div>
+        <div>
+          <div class="brand-title">RiverWatch</div>
+          <div class="brand-tag">INTELLIGENCE 2026</div>
+        </div>
+      </div>
+
+      <ul class="nav-links">
+        <li class="nav-item"><a href="index.html"><span class="nav-icon">📊</span> <span>Dashboard</span></a></li>
+        <li class="nav-item active"><a href="entry.html"><span class="nav-icon">📝</span> <span>Data Entry</span></a></li>
+        <li class="nav-item"><a href="upload.html"><span class="nav-icon">📤</span> <span>Upload & Validate</span></a></li>
+        <li class="nav-item"><a href="stations.html"><span class="nav-icon">📍</span> <span>Station Explorer</span></a></li>
+        <li class="nav-item"><a href="trends.html"><span class="nav-icon">📈</span> <span>Trends Analysis</span></a></li>
+        <li class="nav-item"><a href="drivers.html"><span class="nav-icon">🧬</span> <span>Drivers & PCA</span></a></li>
+        <li class="nav-item"><a href="priority.html"><span class="nav-icon">🎯</span> <span>Sampling Priority</span></a></li>
+        <li class="nav-item"><a href="records.html"><span class="nav-icon">📋</span> <span>Records & Audit</span></a></li>
+        <li class="nav-item"><a href="export.html"><span class="nav-icon">📦</span> <span>Export & Reports</span></a></li>
+      </ul>
+
+      <div class="sidebar-footer">
+        <div id="dbStatusPill" class="db-status-pill">
+          <span>🍃</span> <span>Checking Database...</span>
+        </div>
+      </div>
+    </aside>
+
+    <!-- Main Content -->
+    <main class="main-wrapper">
+      <header class="page-header">
+        <div>
+          <h1 class="page-title">Direct Water Sample Data Entry</h1>
+          <p class="page-subtitle">Record lab measurements directly into the river database to instantly recompute basin analytics and CPCB compliance</p>
+        </div>
+        <div class="header-actions">
+          <button type="button" id="loadCleanSampleBtn" class="btn btn-secondary">✨ Load Clean Sample</button>
+          <button type="button" id="loadPollutedSampleBtn" class="btn btn-secondary">⚠️ Load Polluted Sample</button>
+          <a href="upload.html" class="btn btn-secondary">📁 Bulk File Upload</a>
+        </div>
+      </header>
+
+      <!-- Easy Understanding Guidance Banner -->
+      <section class="guide-banner" style="margin-bottom: 24px;">
+        <div class="guide-step">
+          <div class="step-num" style="background: var(--accent-primary);">1</div>
+          <div>
+            <div class="step-title">Enter Field & Lab Measurements</div>
+            <div class="step-desc">Input station, date, and tested parameters (DO, BOD, pH, Coliform)</div>
+          </div>
+        </div>
+        <div class="guide-arrow">→</div>
+        <div class="guide-step">
+          <div class="step-num" style="background: var(--accent-purple);">2</div>
+          <div>
+            <div class="step-title">Instant Live WQI Calculation</div>
+            <div class="step-desc">Live calculation of Water Quality Index and CPCB Class A-E rating</div>
+          </div>
+        </div>
+        <div class="guide-arrow">→</div>
+        <div class="guide-step">
+          <div class="step-num" style="background: var(--accent-amber);">3</div>
+          <div>
+            <div class="step-title">Basin Analytics Auto-Update</div>
+            <div class="step-desc">Saves to MongoDB/SQLite and refreshes river degradation profiles</div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Main Two-Column Layout: Form (Left) & Live Preview (Right) -->
+      <div style="display: grid; grid-template-columns: 2fr 1fr; gap: 24px; align-items: start;">
+        
+        <!-- Form Section -->
+        <form id="dataEntryForm" class="glass-card" style="padding: 26px;">
+          <h3 style="font-size: 16px; font-weight: 700; margin-bottom: 18px; color: var(--text-primary); border-bottom: 1px solid var(--border-subtle); padding-bottom: 10px;">
+            📍 Sampling Location & Schedule
+          </h3>
+
+          <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 24px;">
+            <div class="form-group">
+              <label class="form-label" for="entryStation">
+                <span>Monitoring Station *</span>
+              </label>
+              <select id="entryStation" class="select-control" required></select>
+            </div>
+
+            <div class="form-group">
+              <label class="form-label" for="entryDate">
+                <span>Sampling Date *</span>
+                <span class="form-helper" id="todayQuickBtn" style="cursor: pointer; color: var(--accent-primary); font-weight: 700;">Set Today</span>
+              </label>
+              <input type="date" id="entryDate" class="input-control" required>
+            </div>
+          </div>
+
+          <!-- Section 1: Core Physical & Chemistry -->
+          <h3 style="font-size: 15px; font-weight: 700; margin-bottom: 14px; color: var(--text-primary); border-bottom: 1px solid var(--border-subtle); padding-bottom: 8px;">
+            💧 Core Chemical & Physical Parameters
+          </h3>
+
+          <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 24px;">
+            <div class="form-group">
+              <label class="form-label" for="param_do_mgl">
+                <span>Dissolved Oxygen (DO)</span>
+                <span class="form-helper">CPCB Std: ≥ 5.0</span>
+              </label>
+              <div class="input-unit-group">
+                <input type="number" step="any" id="param_do_mgl" placeholder="e.g. 7.2">
+                <span class="input-unit-addon">mg/L</span>
+              </div>
+            </div>
+
+            <div class="form-group">
+              <label class="form-label" for="param_ph">
+                <span>pH Value</span>
+                <span class="form-helper">CPCB Std: 6.5 – 8.5</span>
+              </label>
+              <div class="input-unit-group">
+                <input type="number" step="any" id="param_ph" placeholder="e.g. 7.4">
+                <span class="input-unit-addon">pH</span>
+              </div>
+            </div>
+
+            <div class="form-group">
+              <label class="form-label" for="param_temp_c">
+                <span>Water Temperature</span>
+                <span class="form-helper">Ambient</span>
+              </label>
+              <div class="input-unit-group">
+                <input type="number" step="any" id="param_temp_c" placeholder="e.g. 22.5">
+                <span class="input-unit-addon">°C</span>
+              </div>
+            </div>
+
+            <div class="form-group">
+              <label class="form-label" for="param_turbidity_ntu">
+                <span>Turbidity</span>
+                <span class="form-helper">Clarity</span>
+              </label>
+              <div class="input-unit-group">
+                <input type="number" step="any" id="param_turbidity_ntu" placeholder="e.g. 12.0">
+                <span class="input-unit-addon">NTU</span>
+              </div>
+            </div>
+
+            <div class="form-group">
+              <label class="form-label" for="param_conductivity_uscm">
+                <span>Electrical Conductivity</span>
+                <span class="form-helper">Salinity</span>
+              </label>
+              <div class="input-unit-group">
+                <input type="number" step="any" id="param_conductivity_uscm" placeholder="e.g. 350">
+                <span class="input-unit-addon">µS/cm</span>
+              </div>
+            </div>
+
+            <div class="form-group">
+              <label class="form-label" for="param_tds_mgl">
+                <span>Total Dissolved Solids (TDS)</span>
+                <span class="form-helper">CPCB Std: ≤ 500</span>
+              </label>
+              <div class="input-unit-group">
+                <input type="number" step="any" id="param_tds_mgl" placeholder="e.g. 210">
+                <span class="input-unit-addon">mg/L</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Section 2: Organic Pollution & Nutrients -->
+          <h3 style="font-size: 15px; font-weight: 700; margin-bottom: 14px; color: var(--text-primary); border-bottom: 1px solid var(--border-subtle); padding-bottom: 8px;">
+            🧪 Organic Load & Nutrients
+          </h3>
+
+          <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 24px;">
+            <div class="form-group">
+              <label class="form-label" for="param_bod_mgl">
+                <span>Biochemical Oxygen Demand (BOD)</span>
+                <span class="form-helper">CPCB Std: ≤ 3.0</span>
+              </label>
+              <div class="input-unit-group">
+                <input type="number" step="any" id="param_bod_mgl" placeholder="e.g. 2.4">
+                <span class="input-unit-addon">mg/L</span>
+              </div>
+            </div>
+
+            <div class="form-group">
+              <label class="form-label" for="param_cod_mgl">
+                <span>Chemical Oxygen Demand (COD)</span>
+                <span class="form-helper">Industrial</span>
+              </label>
+              <div class="input-unit-group">
+                <input type="number" step="any" id="param_cod_mgl" placeholder="e.g. 14.5">
+                <span class="input-unit-addon">mg/L</span>
+              </div>
+            </div>
+
+            <div class="form-group">
+              <label class="form-label" for="param_nitrate_mgl">
+                <span>Nitrate (NO₃)</span>
+                <span class="form-helper">Agricultural Runoff</span>
+              </label>
+              <div class="input-unit-group">
+                <input type="number" step="any" id="param_nitrate_mgl" placeholder="e.g. 1.8">
+                <span class="input-unit-addon">mg/L</span>
+              </div>
+            </div>
+
+            <div class="form-group">
+              <label class="form-label" for="param_ammonia_mgl">
+                <span>Free Ammonia (NH₃)</span>
+                <span class="form-helper">CPCB Std: ≤ 1.2</span>
+              </label>
+              <div class="input-unit-group">
+                <input type="number" step="any" id="param_ammonia_mgl" placeholder="e.g. 0.35">
+                <span class="input-unit-addon">mg/L</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Section 3: Microbial & Coliform -->
+          <h3 style="font-size: 15px; font-weight: 700; margin-bottom: 14px; color: var(--text-primary); border-bottom: 1px solid var(--border-subtle); padding-bottom: 8px;">
+            🦠 Bacteriological & Microbial Load
+          </h3>
+
+          <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 24px;">
+            <div class="form-group">
+              <label class="form-label" for="param_total_coliform_mpn">
+                <span>Total Coliform</span>
+                <span class="form-helper">CPCB Std: ≤ 500</span>
+              </label>
+              <div class="input-unit-group">
+                <input type="number" step="any" id="param_total_coliform_mpn" placeholder="e.g. 350">
+                <span class="input-unit-addon">MPN/100mL</span>
+              </div>
+            </div>
+
+            <div class="form-group">
+              <label class="form-label" for="param_faecal_coliform_mpn">
+                <span>Faecal Coliform</span>
+                <span class="form-helper">Sewage Indicator</span>
+              </label>
+              <div class="input-unit-group">
+                <input type="number" step="any" id="param_faecal_coliform_mpn" placeholder="e.g. 120">
+                <span class="input-unit-addon">MPN/100mL</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Notes -->
+          <div class="form-group" style="margin-bottom: 24px;">
+            <label class="form-label" for="entryNotes">Field Notes / Lab Sampling Context</label>
+            <input type="text" id="entryNotes" class="input-control" placeholder="e.g. Regular monthly post-monsoon sampling by State PCB team">
+          </div>
+
+          <!-- Submit Buttons -->
+          <div style="display: flex; gap: 12px; align-items: center; border-top: 1px solid var(--border-subtle); padding-top: 20px;">
+            <button type="submit" id="submitEntryBtn" class="btn btn-primary" style="padding: 11px 24px; font-size: 14px;">
+              ⚡ Save Sample & Recompute Analytics
+            </button>
+            <button type="button" id="previewBtn" class="btn btn-secondary">
+              👁️ Preview Health Score
+            </button>
+            <button type="button" id="resetFormBtn" class="btn btn-secondary" style="margin-left: auto;">
+              🔄 Reset Form
+            </button>
+          </div>
+        </form>
+
+        <!-- Right Column: Live Calculation Preview & Quick Links -->
+        <div style="display: flex; flex-direction: column; gap: 20px;">
+          
+          <!-- Live Preview Card -->
+          <div class="glass-card card-emerald" id="previewCard">
+            <div class="tag-pill tag-pill-emerald">Real-time Calculation Engine</div>
+            <h3 style="font-size: 16px; font-weight: 700; margin-bottom: 6px;">Live Health Rating Preview</h3>
+            <p style="font-size: 12px; color: var(--text-muted); margin-bottom: 18px;">
+              Computed instantly using CPCB weighted-arithmetic index formulas
+            </p>
+
+            <div style="background: #f8fafc; border: 1px solid var(--border-subtle); border-radius: var(--radius-sm); padding: 18px; text-align: center; margin-bottom: 16px;">
+              <div style="font-size: 11px; font-weight: 700; text-transform: uppercase; color: var(--text-muted); letter-spacing: 0.05em;">Estimated WQI Score</div>
+              <div id="previewWqiVal" style="font-size: 38px; font-weight: 800; color: var(--accent-primary); margin: 4px 0;">--</div>
+              <div id="previewWqiClass"><span class="status-pill pill-good">Awaiting Data</span></div>
+            </div>
+
+            <div style="margin-bottom: 16px; font-size: 13px;">
+              <div style="display: flex; justify-content: space-between; padding: 6px 0; border-bottom: 1px solid var(--border-subtle);">
+                <span style="color: var(--text-muted);">CPCB Class:</span>
+                <strong id="previewCpcbClass">--</strong>
+              </div>
+              <div style="display: flex; justify-content: space-between; padding: 6px 0; border-bottom: 1px solid var(--border-subtle);">
+                <span style="color: var(--text-muted);">Parameters Evaluated:</span>
+                <strong id="previewParamsCount">0 / 12</strong>
+              </div>
+              <div style="padding: 8px 0;">
+                <span style="color: var(--text-muted); display: block; margin-bottom: 4px;">Violations Flagged:</span>
+                <div id="previewViolations" style="font-size: 12px; color: var(--accent-rose); line-height: 1.4;">None</div>
+              </div>
+            </div>
+
+            <!-- Post-Submit Links (Hidden initially) -->
+            <div id="postSubmitLinks" style="display: none; border-top: 1px solid var(--border-subtle); padding-top: 14px; margin-top: 8px;">
+              <div style="font-size: 12px; font-weight: 700; color: var(--accent-primary); margin-bottom: 10px;">✅ Sample Recorded in Database!</div>
+              <div style="display: flex; flex-direction: column; gap: 8px;">
+                <a href="index.html" class="btn btn-primary btn-sm" style="width: 100%;">📊 View Basin Dashboard</a>
+                <a href="stations.html" class="btn btn-secondary btn-sm" style="width: 100%;">📍 Open Station Explorer</a>
+                <a href="records.html" class="btn btn-secondary btn-sm" style="width: 100%;">📋 View in Records Table</a>
+              </div>
+            </div>
+          </div>
+
+          <!-- Info Card -->
+          <div class="glass-card">
+            <h4 style="font-size: 14px; font-weight: 700; margin-bottom: 8px;">💡 How Data Entry Affects Analytics</h4>
+            <p style="font-size: 12.5px; color: var(--text-muted); line-height: 1.5;">
+              Whenever you record a sample:
+            </p>
+            <ul style="font-size: 12px; color: var(--text-secondary); margin-left: 18px; margin-top: 8px; line-height: 1.6;">
+              <li>WQI and CPCB Best-Use Classes are calculated immediately.</li>
+              <li>Longitudinal river profile updates from upstream to downstream.</li>
+              <li>Station priority scoring recalculates field inspection urgency.</li>
+              <li>Document synchronizes to MongoDB (when configured in .env).</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </main>
+  </div>
+
+  <script src="/static/js/app.js"></script>
+  <script src="/static/js/entry.js"></script>
+</body>
+</html>

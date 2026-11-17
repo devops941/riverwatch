@@ -1,0 +1,224 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Upload & Validation | RiverWatch 2026</title>
+  <link rel="stylesheet" href="/static/css/style.css">
+</head>
+<body>
+  <div class="app-container">
+    <!-- Sidebar -->
+    <aside class="sidebar">
+      <div class="sidebar-brand">
+        <div class="brand-icon">🌊</div>
+        <div>
+          <div class="brand-title">RiverWatch</div>
+          <div class="brand-tag">INTELLIGENCE 2026</div>
+        </div>
+      </div>
+
+      <ul class="nav-links">
+        <li class="nav-item"><a href="index.html"><span class="nav-icon">📊</span> <span>Dashboard</span></a></li>
+        <li class="nav-item"><a href="entry.html"><span class="nav-icon">📝</span> <span>Data Entry</span></a></li>
+        <li class="nav-item active"><a href="upload.html"><span class="nav-icon">📤</span> <span>Upload & Validate</span></a></li>
+        <li class="nav-item"><a href="stations.html"><span class="nav-icon">📍</span> <span>Station Explorer</span></a></li>
+        <li class="nav-item"><a href="trends.html"><span class="nav-icon">📈</span> <span>Trends Analysis</span></a></li>
+        <li class="nav-item"><a href="drivers.html"><span class="nav-icon">🧬</span> <span>Drivers & PCA</span></a></li>
+        <li class="nav-item"><a href="priority.html"><span class="nav-icon">🎯</span> <span>Sampling Priority</span></a></li>
+        <li class="nav-item"><a href="records.html"><span class="nav-icon">📋</span> <span>Records & Audit</span></a></li>
+        <li class="nav-item"><a href="export.html"><span class="nav-icon">📦</span> <span>Export & Reports</span></a></li>
+      </ul>
+
+      <div class="sidebar-footer">
+        <div id="dbStatusPill" class="db-status-pill">
+          <span>🍃</span> <span>Checking Database...</span>
+        </div>
+      </div>
+    </aside>
+
+    <!-- Main Content -->
+    <main class="main-wrapper">
+      <header class="page-header">
+        <div>
+          <h1 class="page-title">Dataset Ingestion & Validation Studio</h1>
+          <p class="page-subtitle">Upload CSV/Excel monitoring data, audit automated 10-rule checks, and commit clean records into MongoDB/SQLite</p>
+        </div>
+        <div class="header-actions">
+          <a href="entry.html" class="btn btn-primary">📝 Manual Data Entry Form</a>
+          <a href="/api/template" class="btn btn-secondary">📥 Blank CSV Template</a>
+          <button id="loadSyntheticBtn" class="btn btn-secondary">⚡ Load 8-Yr Baseline</button>
+        </div>
+      </header>
+
+      <!-- Easy Understanding Guidance Banner -->
+      <section class="guide-banner" style="margin-bottom: 24px;">
+        <div class="guide-step">
+          <div class="step-num" style="background: var(--accent-primary);">1</div>
+          <div>
+            <div class="step-title">Select Any Water File</div>
+            <div class="step-desc">Drop your CSV or Excel workbook. Auto-alias recognizes state PCB headers</div>
+          </div>
+        </div>
+        <div class="guide-arrow">→</div>
+        <div class="guide-step">
+          <div class="step-num" style="background: var(--accent-purple);">2</div>
+          <div>
+            <div class="step-title">Automated Rule Engine</div>
+            <div class="step-desc">10 rules check pH bounds, DO saturation, units (µg/L → mg/L), and censored values</div>
+          </div>
+        </div>
+        <div class="guide-arrow">→</div>
+        <div class="guide-step">
+          <div class="step-num" style="background: var(--accent-amber);">3</div>
+          <div>
+            <div class="step-title">Resolve or Override</div>
+            <div class="step-desc">Fix lab typos inline with full audit trail before committing to the database</div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Quick Switch Banner to Manual Form -->
+      <div style="background: #f0fdf4; border: 1px solid #bbf7d0; border-radius: 8px; padding: 14px 20px; display: flex; justify-content: space-between; align-items: center; margin-bottom: 24px;">
+        <div style="display: flex; align-items: center; gap: 12px;">
+          <span style="font-size: 22px;">💡</span>
+          <div>
+            <strong style="color: #047857; font-size: 13.5px;">Want to enter individual field measurements directly?</strong>
+            <p style="color: #475569; font-size: 12px; margin-top: 2px;">Use the Direct Data Entry Form to type in DO, BOD, pH with instant live WQI calculation.</p>
+          </div>
+        </div>
+        <a href="entry.html" class="btn btn-primary btn-sm">Open Data Entry Form →</a>
+      </div>
+
+      <!-- Upload Dropzone & Action Bento -->
+      <section class="glass-card card-emerald" style="margin-bottom: 24px;">
+        <div id="dropzone" class="upload-dropzone">
+          <div class="upload-icon">📂</div>
+          <h3 style="font-size: 18px; font-weight: 700; margin-bottom: 6px; color: #0f172a;">Drag & Drop River Monitoring File Here</h3>
+          <p style="font-size: 13.5px; color: var(--text-muted); margin-bottom: 18px;">
+            Supports <code>.csv</code> and <code>.xlsx</code> formats (CPCB, India-WRIS, state PCB laboratory spreadsheets)
+          </p>
+          <input type="file" id="fileInput" accept=".csv, .xlsx, .xls" style="display: none;">
+          <div style="display: flex; gap: 12px; justify-content: center;">
+            <button type="button" class="btn btn-primary" onclick="document.getElementById('fileInput').click()">Browse Computer Files</button>
+            <a href="/api/template" class="btn btn-secondary">📥 Download Template</a>
+          </div>
+        </div>
+      </section>
+
+      <!-- Validation Summary Bento -->
+      <section id="validationSummarySection" class="bento-grid grid-cols-4" style="display: none; margin-bottom: 24px;">
+        <div class="glass-card kpi-card card-purple">
+          <div>
+            <div class="kpi-label">Ingested Rows</div>
+            <div id="valTotalRows" class="kpi-value">0</div>
+            <div class="kpi-badge badge-purple">Parsed Successfully</div>
+          </div>
+          <div class="kpi-icon" style="color: var(--accent-purple);">📄</div>
+        </div>
+
+        <div class="glass-card kpi-card card-rose">
+          <div>
+            <div class="kpi-label">Blocking Errors</div>
+            <div id="valErrors" class="kpi-value" style="color: var(--accent-rose);">0</div>
+            <div class="kpi-badge badge-danger">Requires Review</div>
+          </div>
+          <div class="kpi-icon" style="color: var(--accent-rose);">❌</div>
+        </div>
+
+        <div class="glass-card kpi-card card-amber">
+          <div>
+            <div class="kpi-label">Quality Warnings</div>
+            <div id="valWarnings" class="kpi-value" style="color: var(--accent-amber);">0</div>
+            <div class="kpi-badge badge-warning">Auto-handled</div>
+          </div>
+          <div class="kpi-icon" style="color: var(--accent-amber);">⚠️</div>
+        </div>
+
+        <div class="glass-card kpi-card card-emerald">
+          <div>
+            <div class="kpi-label">Upload Status</div>
+            <div id="valStatus" class="kpi-value" style="font-size: 20px; margin-top: 10px; color: var(--accent-primary);">Ready</div>
+            <div id="valUploadId" style="font-size: 11px; color: var(--text-muted);">ID: --</div>
+          </div>
+          <div class="kpi-icon" style="color: var(--accent-primary);">🛡️</div>
+        </div>
+      </section>
+
+      <!-- Issues Review & Commit Table -->
+      <section id="issuesSection" class="glass-card" style="display: none;">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 18px; flex-wrap: wrap; gap: 12px;">
+          <div>
+            <h3 style="font-size: 17px; font-weight: 700; color: #0f172a;">Validation Rule Report & Anomaly Resolver</h3>
+            <p style="font-size: 12.5px; color: var(--text-muted);">Audit every flag, apply inline fixes, or ignore acceptable outliers</p>
+          </div>
+          <div style="display: flex; align-items: center; gap: 10px;">
+            <select id="severityFilter" class="select-control" style="width: auto;">
+              <option value="">All Severities</option>
+              <option value="error">Errors Only</option>
+              <option value="warning">Warnings Only</option>
+            </select>
+            <select id="statusFilter" class="select-control" style="width: auto;">
+              <option value="">All Statuses</option>
+              <option value="open">Open</option>
+              <option value="fixed">Fixed</option>
+              <option value="ignored">Ignored</option>
+              <option value="excluded">Excluded</option>
+            </select>
+            <button id="commitBtn" class="btn btn-primary">✅ Commit Data & Run Analytics</button>
+          </div>
+        </div>
+
+        <div class="table-responsive">
+          <table class="data-table">
+            <thead>
+              <tr>
+                <th>Row #</th>
+                <th>Column</th>
+                <th>Observed Value</th>
+                <th>Severity</th>
+                <th>Rule Name</th>
+                <th>Diagnosis & Suggestion</th>
+                <th>Status</th>
+                <th>Review Action</th>
+              </tr>
+            </thead>
+            <tbody id="issuesTableBody">
+              <tr><td colspan="8" style="text-align: center; color: var(--text-muted); padding: 24px;">No issues to display</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </section>
+    </main>
+  </div>
+
+  <!-- Inline Fix Modal -->
+  <div id="fixModal" class="modal-overlay" style="display: none;">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h3 style="font-size: 17px; font-weight: 700; color: #0f172a;">Resolve Validation Issue</h3>
+        <button type="button" class="modal-close-btn" id="modalCloseXBtn">✕</button>
+      </div>
+      <div id="modalDetails" style="font-size: 13px; color: var(--text-secondary); margin-bottom: 16px;"></div>
+
+      <div style="margin-bottom: 14px;">
+        <label style="font-size: 12px; font-weight: 600; text-transform: uppercase; color: var(--text-muted); display: block; margin-bottom: 6px;">New Value</label>
+        <input type="text" id="modalNewVal" class="input-control" style="width: 100%;" placeholder="Enter corrected value...">
+      </div>
+
+      <div style="margin-bottom: 20px;">
+        <label style="font-size: 12px; font-weight: 600; text-transform: uppercase; color: var(--text-muted); display: block; margin-bottom: 6px;">Audit Reason</label>
+        <input type="text" id="modalReason" class="input-control" style="width: 100%;" value="Manual correction based on lab sheets">
+      </div>
+
+      <div style="display: flex; justify-content: flex-end; gap: 10px;">
+        <button id="cancelModalBtn" class="btn btn-secondary">Cancel</button>
+        <button id="saveFixBtn" class="btn btn-primary">Save & Apply Fix</button>
+      </div>
+    </div>
+  </div>
+
+  <script src="/static/js/app.js"></script>
+  <script src="/static/js/upload.js"></script>
+</body>
+</html>
