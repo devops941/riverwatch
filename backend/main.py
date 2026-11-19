@@ -76,13 +76,23 @@ def database_status():
 if FRONTEND_DIR.exists():
     app.mount("/static", StaticFiles(directory=str(FRONTEND_DIR)), name="static")
 
+    NO_CACHE_HEADERS = {
+        "Cache-Control": "no-cache, no-store, must-revalidate",
+        "Pragma": "no-cache",
+        "Expires": "0",
+    }
+
     @app.get("/", include_in_schema=False)
     def serve_index():
-        return FileResponse(str(FRONTEND_DIR / "index.html"))
+        return FileResponse(str(FRONTEND_DIR / "index.html"), headers=NO_CACHE_HEADERS)
+
+    @app.get("/upload.html", include_in_schema=False)
+    def redirect_old_upload():
+        return RedirectResponse(url="/riverupload.html", status_code=302)
 
     @app.get("/{page}.html", include_in_schema=False)
     def serve_html_page(page: str):
         target = FRONTEND_DIR / f"{page}.html"
         if target.exists():
-            return FileResponse(str(target))
-        return FileResponse(str(FRONTEND_DIR / "index.html"))
+            return FileResponse(str(target), headers=NO_CACHE_HEADERS)
+        return FileResponse(str(FRONTEND_DIR / "index.html"), headers=NO_CACHE_HEADERS)

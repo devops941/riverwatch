@@ -107,7 +107,7 @@ river_watch/
 │       └── reports.py             # PDF executive report generator & downloads
 ├── frontend/
 │   ├── index.html                 # 2026 River Basin Dashboard
-│   ├── upload.html                # Dataset Ingestion & Validation Anomaly Resolver
+│   ├── riverupload.html           # Dataset Ingestion & Validation Anomaly Resolver
 │   ├── stations.html              # Monitoring Station Explorer & Seasonal Dynamics
 │   ├── trends.html                # Mann-Kendall Trends & Sen's Slope Rates
 │   ├── drivers.html               # Pollution Drivers, Spearman Heatmap & PCA Biplot

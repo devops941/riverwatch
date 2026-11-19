@@ -31,10 +31,15 @@ const RiverWatch = {
     const currentPath = window.location.pathname.split('/').pop() || 'index.html';
     document.querySelectorAll('.nav-links .nav-item').forEach(item => {
       const link = item.querySelector('a');
-      if (link && link.getAttribute('href') === currentPath) {
-        item.classList.add('active');
-      } else {
-        item.classList.remove('active');
+      if (link) {
+        if (link.getAttribute('href') === 'upload.html') {
+          link.setAttribute('href', 'riverupload.html');
+        }
+        if (link.getAttribute('href') === currentPath) {
+          item.classList.add('active');
+        } else {
+          item.classList.remove('active');
+        }
       }
     });
   },
@@ -163,7 +168,7 @@ const RiverWatch = {
           </div>
 
           <div style="margin-top: 16px; display: flex; justify-content: space-between; align-items: center;">
-            <a href="upload.html" style="font-size: 12px; color: #7c3aed; text-decoration: none; font-weight: 600;">Full Validation Studio →</a>
+            <a href="riverupload.html" style="font-size: 12px; color: #7c3aed; text-decoration: none; font-weight: 600;">Full Validation Studio →</a>
             <button type="button" id="modalUploadSubmitBtn" class="btn btn-primary btn-sm" disabled>⚡ Ingest & Validate File</button>
           </div>
         </div>
@@ -204,7 +209,7 @@ const RiverWatch = {
         RiverWatch.toast(`Dataset uploaded successfully! Ingested ${result.row_count} records.`, 'success');
         RiverWatch.closeUploadModal();
         setTimeout(() => {
-          window.location.href = 'upload.html';
+          window.location.href = 'riverupload.html';
         }, 1000);
       } catch (err) {
         RiverWatch.toast(`Upload Error: ${err.message}`, 'error');
@@ -313,3 +318,16 @@ const RiverWatch = {
 };
 
 document.addEventListener('DOMContentLoaded', () => RiverWatch.init());
+
+// Global safety interceptor: guarantees clicking any upload link always routes to riverupload.html
+document.addEventListener('click', (e) => {
+  const link = e.target.closest('a');
+  if (link) {
+    const href = link.getAttribute('href') || '';
+    if (href === 'upload.html' || href.endsWith('/upload.html')) {
+      e.preventDefault();
+      e.stopPropagation();
+      window.location.href = 'riverupload.html';
+    }
+  }
+}, true);
